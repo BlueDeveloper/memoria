@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   format,
   startOfMonth,
@@ -16,6 +16,8 @@ import {
 import { ko } from 'date-fns/locale';
 import { useCalendarStore } from '@/store/calendarStore';
 import { CalendarEvent } from '@/types/calendar';
+import EventModal from '@/components/calendar/EventModal/EventModal';
+import EventDetailModal from '@/components/calendar/EventDetailModal/EventDetailModal';
 import styles from './MonthView.module.css';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -27,6 +29,11 @@ export default function MonthView() {
   const visibleCalendarIds = useCalendarStore((s) => s.visibleCalendarIds);
   const calendars = useCalendarStore((s) => s.calendars);
   const setCurrentDate = useCalendarStore((s) => s.setCurrentDate);
+
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   const days = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
@@ -57,7 +64,13 @@ export default function MonthView() {
 
   const handleDayClick = (day: Date) => {
     setCurrentDate(day);
-    // TODO: 이벤트 생성 모달 열기
+    setSelectedDate(day);
+    setShowEventModal(true);
+  };
+
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setShowDetailModal(true);
   };
 
   return (
@@ -100,7 +113,7 @@ export default function MonthView() {
                     style={{ backgroundColor: getEventColor(event) }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      // TODO: 이벤트 상세 모달
+                      handleEventClick(event);
                     }}
                     title={event.title}
                   >
@@ -119,6 +132,24 @@ export default function MonthView() {
           );
         })}
       </div>
+
+      {showEventModal && (
+        <EventModal
+          onClose={() => setShowEventModal(false)}
+          initialDate={selectedDate ?? undefined}
+        />
+      )}
+
+      {showDetailModal && selectedEvent && (
+        <EventDetailModal
+          event={selectedEvent}
+          onClose={() => { setShowDetailModal(false); setSelectedEvent(null); }}
+          onEdit={() => {
+            setShowDetailModal(false);
+            setShowEventModal(true);
+          }}
+        />
+      )}
     </div>
   );
 }

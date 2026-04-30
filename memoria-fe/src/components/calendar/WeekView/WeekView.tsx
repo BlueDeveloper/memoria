@@ -16,6 +16,8 @@ import {
 import { ko } from 'date-fns/locale';
 import { useCalendarStore } from '@/store/calendarStore';
 import { CalendarEvent } from '@/types/calendar';
+import EventModal from '@/components/calendar/EventModal/EventModal';
+import EventDetailModal from '@/components/calendar/EventDetailModal/EventDetailModal';
 import styles from './WeekView.module.css';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
@@ -28,6 +30,11 @@ export default function WeekView() {
   const calendars = useCalendarStore((s) => s.calendars);
   const gridRef = useRef<HTMLDivElement>(null);
   const [now, setNow] = useState(new Date());
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [modalDate, setModalDate] = useState<Date | null>(null);
+  const [modalHour, setModalHour] = useState<number>(9);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   const weekDays = useMemo(() => {
     const start = startOfWeek(currentDate, { weekStartsOn: 0 });
@@ -101,8 +108,14 @@ export default function WeekView() {
   const nowLineTop = (nowMinutes / 60) * SLOT_HEIGHT;
 
   const handleSlotClick = (day: Date, hour: number) => {
-    // TODO: 이벤트 생성 모달 (해당 날짜+시간)
-    console.log('Create event:', format(day, 'yyyy-MM-dd'), `${hour}:00`);
+    setModalDate(day);
+    setModalHour(hour);
+    setShowEventModal(true);
+  };
+
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setShowDetailModal(true);
   };
 
   return (
@@ -207,7 +220,7 @@ export default function WeekView() {
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        // TODO: 이벤트 상세 모달
+                        handleEventClick(event);
                       }}
                     >
                       <span className={styles.eventTime}>
@@ -229,6 +242,26 @@ export default function WeekView() {
           })}
         </div>
       </div>
+
+      {showEventModal && (
+        <EventModal
+          onClose={() => setShowEventModal(false)}
+          initialDate={modalDate ?? undefined}
+          initialHour={modalHour}
+        />
+      )}
+
+      {showDetailModal && selectedEvent && (
+        <EventDetailModal
+          event={selectedEvent}
+          onClose={() => { setShowDetailModal(false); setSelectedEvent(null); }}
+          onEdit={() => {
+            setShowDetailModal(false);
+            setSelectedEvent(null);
+            setShowEventModal(true);
+          }}
+        />
+      )}
     </div>
   );
 }

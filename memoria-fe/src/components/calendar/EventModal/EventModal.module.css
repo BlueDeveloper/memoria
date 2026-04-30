@@ -1,0 +1,279 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.modal {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.closeButton {
+  color: var(--color-text-light);
+  padding: 4px;
+  border-radius: 6px;
+  transition: background var(--transition);
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.form {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* 캘린더 선택 */
+.select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  background: var(--color-bg-card);
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* 종일 체크박스 */
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+/* 날짜/시간 */
+.dateTimeGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dateTimeRow {
+  display: flex;
+  gap: 8px;
+}
+
+.dateSep {
+  font-size: 14px;
+  color: var(--color-text-light);
+}
+
+.dateInput,
+.timeInput {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  background: var(--color-bg-card);
+}
+
+.dateInput:focus,
+.timeInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.dateInput {
+  width: 150px;
+}
+
+.timeInput {
+  width: 110px;
+}
+
+/* 아이콘 필드 */
+.iconField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fieldIcon {
+  color: var(--color-text-light);
+  flex-shrink: 0;
+}
+
+.iconInput {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  background: transparent;
+}
+
+.iconInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.iconSelect {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  background: transparent;
+  cursor: pointer;
+}
+
+.iconSelect:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* 메모 */
+.textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  resize: vertical;
+  transition: border-color var(--transition);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* 색상 */
+.colorButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-light);
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.colorPreview {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+}
+
+.colorPicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-left: 26px;
+}
+
+.colorDot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform var(--transition);
+}
+
+.colorDot:hover {
+  transform: scale(1.15);
+}
+
+.colorDotSelected {
+  border-color: var(--color-text);
+  box-shadow: 0 0 0 2px var(--color-bg-card), 0 0 0 3px var(--color-text);
+}
+
+.error {
+  font-size: 12px;
+  color: var(--color-error);
+}
+
+/* 액션 */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    max-width: 100%;
+    margin: 0 8px;
+  }
+
+  .dateInput {
+    width: 130px;
+  }
+
+  .timeInput {
+    width: 100px;
+  }
+}
