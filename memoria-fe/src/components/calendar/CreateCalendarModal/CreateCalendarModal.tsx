@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { X } from 'lucide-react';
 import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Input/Input';
+import { createCalendar } from '@/lib/calendarApi';
 import styles from './CreateCalendarModal.module.css';
 
 const PRESET_COLORS = [
@@ -47,12 +48,16 @@ export default function CreateCalendarModal({ onClose }: Props) {
   });
 
   const onSubmit = async (data: FormData) => {
-    // TODO: API 연동
-    console.log('Create calendar:', {
-      ...data,
-      color: selectedColor,
-      groupType: selectedGroupType,
-    });
+    try {
+      await createCalendar({
+        name: data.name,
+        description: data.description,
+        color: selectedColor,
+        groupType: selectedGroupType,
+      });
+    } catch (err) {
+      console.error('캘린더 생성 실패:', err);
+    }
     onClose();
   };
 

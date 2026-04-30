@@ -10,6 +10,7 @@ import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Input/Input';
 import { useCalendarStore } from '@/store/calendarStore';
 import { CalendarEvent } from '@/types/calendar';
+import { createEvent, updateEvent } from '@/lib/calendarApi';
 import styles from './EventModal.module.css';
 
 const REPEAT_OPTIONS = [
@@ -135,11 +136,14 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
       remindMinutes: data.remindMinutes || undefined,
     };
 
-    // TODO: API 연동
-    if (isEdit) {
-      console.log('Update event:', event.eventId, payload);
-    } else {
-      console.log('Create event:', payload);
+    try {
+      if (isEdit) {
+        await updateEvent(event.eventId, payload);
+      } else {
+        await createEvent(payload);
+      }
+    } catch (err) {
+      console.error('이벤트 저장 실패:', err);
     }
     onClose();
   };

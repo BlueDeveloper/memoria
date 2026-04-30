@@ -1,0 +1,13 @@
+/* ========================================
+   Memoria - Oracle User 생성 스크립트
+   ADMIN 계정으로 실행
+   ======================================== */
+
+CREATE USER MEMORIA IDENTIFIED BY "password_here";
+
+GRANT CONNECT, RESOURCE TO MEMORIA;
+GRANT UNLIMITED TABLESPACE TO MEMORIA;
+GRANT CREATE SESSION TO MEMORIA;
+GRANT CREATE TABLE TO MEMORIA;
+GRANT CREATE SEQUENCE TO MEMORIA;
+GRANT CREATE VIEW TO MEMORIA;
