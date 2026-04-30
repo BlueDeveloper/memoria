@@ -1,11 +1,11 @@
 package com.brp.memoria.domain.event.service;
 
-import com.brp.memoria.domain.calendar.entity.Calendar;
-import com.brp.memoria.domain.calendar.entity.CalendarMember;
-import com.brp.memoria.domain.calendar.exception.CalendarErrorCode;
-import com.brp.memoria.domain.calendar.exception.CalendarException;
-import com.brp.memoria.domain.calendar.repository.CalendarMemberRepository;
-import com.brp.memoria.domain.calendar.repository.CalendarRepository;
+import com.brp.memoria.domain.diary.entity.Diary;
+import com.brp.memoria.domain.diary.entity.DiaryMember;
+import com.brp.memoria.domain.diary.exception.DiaryErrorCode;
+import com.brp.memoria.domain.diary.exception.DiaryException;
+import com.brp.memoria.domain.diary.repository.DiaryMemberRepository;
+import com.brp.memoria.domain.diary.repository.DiaryRepository;
 import com.brp.memoria.domain.event.dto.EventCreateRequest;
 import com.brp.memoria.domain.event.dto.EventListResponse;
 import com.brp.memoria.domain.event.dto.EventResponse;
@@ -34,15 +34,15 @@ import java.util.stream.Collectors;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final CalendarRepository calendarRepository;
-    private final CalendarMemberRepository calendarMemberRepository;
+    private final DiaryRepository diaryRepository;
+    private final DiaryMemberRepository diaryMemberRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
     public EventResponse createEvent(Long memberId, EventCreateRequest request) {
-        Calendar calendar = findCalendarById(request.getCalendarId());
+        Diary diary = findDiaryById(request.getDiaryId());
         Member member = findMemberById(memberId);
-        findCalendarMember(calendar, member);
+        findDiaryMember(diary, member);
 
         Event.RepeatType repeatType = null;
         if (request.getRepeatType() != null) {
@@ -50,7 +50,7 @@ public class EventService {
         }
 
         Event event = Event.builder()
-                .calendar(calendar)
+                .diary(diary)
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .location(request.getLocation())
@@ -68,13 +68,13 @@ public class EventService {
         return EventResponse.from(event);
     }
 
-    public EventListResponse getEventsByCalendarAndDateRange(Long memberId, Long calendarId,
-                                                              LocalDateTime start, LocalDateTime end) {
-        Calendar calendar = findCalendarById(calendarId);
+    public EventListResponse getEventsByDiaryAndDateRange(Long memberId, Long diaryId,
+                                                           LocalDateTime start, LocalDateTime end) {
+        Diary diary = findDiaryById(diaryId);
         Member member = findMemberById(memberId);
-        findCalendarMember(calendar, member);
+        findDiaryMember(diary, member);
 
-        List<Event> events = eventRepository.findByCalendarAndStartDtBetween(calendar, start, end)
+        List<Event> events = eventRepository.findByDiaryAndStartDtBetween(diary, start, end)
                 .stream()
                 .filter(e -> "N".equals(e.getDelYn()))
                 .collect(Collectors.toList());
@@ -89,7 +89,7 @@ public class EventService {
     public EventResponse getEventDetail(Long memberId, Long eventId) {
         Event event = findEventById(eventId);
         Member member = findMemberById(memberId);
-        findCalendarMember(event.getCalendar(), member);
+        findDiaryMember(event.getDiary(), member);
 
         return EventResponse.from(event);
     }
@@ -98,9 +98,9 @@ public class EventService {
     public EventResponse updateEvent(Long memberId, Long eventId, EventUpdateRequest request) {
         Event event = findEventById(eventId);
         Member member = findMemberById(memberId);
-        CalendarMember calendarMember = findCalendarMember(event.getCalendar(), member);
+        DiaryMember diaryMember = findDiaryMember(event.getDiary(), member);
 
-        validateCreatorOrAdmin(event, member, calendarMember);
+        validateCreatorOrAdmin(event, member, diaryMember);
 
         if (request.getTitle() != null) {
             event.updateTitle(request.getTitle());
@@ -134,9 +134,9 @@ public class EventService {
     public void deleteEvent(Long memberId, Long eventId) {
         Event event = findEventById(eventId);
         Member member = findMemberById(memberId);
-        CalendarMember calendarMember = findCalendarMember(event.getCalendar(), member);
+        DiaryMember diaryMember = findDiaryMember(event.getDiary(), member);
 
-        validateCreatorOrAdmin(event, member, calendarMember);
+        validateCreatorOrAdmin(event, member, diaryMember);
 
         event.delete();
     }
@@ -149,10 +149,10 @@ public class EventService {
                 .orElseThrow(() -> new EventException(EventErrorCode.EVENT_NOT_FOUND));
     }
 
-    private Calendar findCalendarById(Long calendarId) {
-        return calendarRepository.findById(calendarId)
-                .filter(c -> "N".equals(c.getDelYn()))
-                .orElseThrow(() -> new CalendarException(CalendarErrorCode.CALENDAR_NOT_FOUND));
+    private Diary findDiaryById(Long diaryId) {
+        return diaryRepository.findById(diaryId)
+                .filter(d -> "N".equals(d.getDelYn()))
+                .orElseThrow(() -> new DiaryException(DiaryErrorCode.DIARY_NOT_FOUND));
     }
 
     private Member findMemberById(Long memberId) {
@@ -161,16 +161,16 @@ public class EventService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "회원을 찾을 수 없습니다."));
     }
 
-    private CalendarMember findCalendarMember(Calendar calendar, Member member) {
-        return calendarMemberRepository.findByCalendarAndMember(calendar, member)
-                .filter(cm -> "N".equals(cm.getDelYn()))
-                .orElseThrow(() -> new CalendarException(CalendarErrorCode.NOT_CALENDAR_MEMBER));
+    private DiaryMember findDiaryMember(Diary diary, Member member) {
+        return diaryMemberRepository.findByDiaryAndMember(diary, member)
+                .filter(dm -> "N".equals(dm.getDelYn()))
+                .orElseThrow(() -> new DiaryException(DiaryErrorCode.NOT_DIARY_MEMBER));
     }
 
-    private void validateCreatorOrAdmin(Event event, Member member, CalendarMember calendarMember) {
+    private void validateCreatorOrAdmin(Event event, Member member, DiaryMember diaryMember) {
         boolean isCreator = event.getCreator().getMemberId().equals(member.getMemberId());
-        boolean isAdminOrOwner = calendarMember.getRole() == CalendarMember.CalendarRole.OWNER
-                || calendarMember.getRole() == CalendarMember.CalendarRole.ADMIN;
+        boolean isAdminOrOwner = diaryMember.getRole() == DiaryMember.DiaryRole.OWNER
+                || diaryMember.getRole() == DiaryMember.DiaryRole.ADMIN;
 
         if (!isCreator && !isAdminOrOwner) {
             throw new EventException(EventErrorCode.NOT_EVENT_CREATOR);

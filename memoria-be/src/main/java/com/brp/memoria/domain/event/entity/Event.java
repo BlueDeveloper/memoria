@@ -1,6 +1,6 @@
 package com.brp.memoria.domain.event.entity;
 
-import com.brp.memoria.domain.calendar.entity.Calendar;
+import com.brp.memoria.domain.diary.entity.Diary;
 import com.brp.memoria.domain.member.entity.Member;
 import com.brp.memoria.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -28,9 +28,9 @@ public class Event extends BaseEntity {
     private Long eventId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CALENDAR_ID", nullable = false,
+    @JoinColumn(name = "DIARY_ID", nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Calendar calendar;
+    private Diary diary;
 
     @Column(name = "TITLE", nullable = false, length = 300)
     private String title;
@@ -69,10 +69,10 @@ public class Event extends BaseEntity {
     private String delYn;
 
     @Builder
-    public Event(Calendar calendar, String title, String description, String location,
+    public Event(Diary diary, String title, String description, String location,
                  LocalDateTime startDt, LocalDateTime endDt, String allDayYn, String color,
                  RepeatType repeatType, Integer remindMinutes, Member creator) {
-        this.calendar = calendar;
+        this.diary = diary;
         this.title = title;
         this.description = description;
         this.location = location;

@@ -29,13 +29,13 @@ public class EventController {
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
-    @GetMapping("/api/calendars/{calendarId}/events")
+    @GetMapping("/api/diaries/{diaryId}/events")
     public ResponseEntity<ApiResponse<EventListResponse>> getEventsByDateRange(
-            @PathVariable Long calendarId,
+            @PathVariable Long diaryId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
         Long memberId = SecurityUtil.getCurrentMemberId();
-        EventListResponse response = eventService.getEventsByCalendarAndDateRange(memberId, calendarId, start, end);
+        EventListResponse response = eventService.getEventsByDiaryAndDateRange(memberId, diaryId, start, end);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 

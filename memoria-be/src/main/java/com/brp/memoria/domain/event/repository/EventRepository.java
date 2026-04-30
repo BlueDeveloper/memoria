@@ -1,6 +1,6 @@
 package com.brp.memoria.domain.event.repository;
 
-import com.brp.memoria.domain.calendar.entity.Calendar;
+import com.brp.memoria.domain.diary.entity.Diary;
 import com.brp.memoria.domain.event.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    List<Event> findByCalendarAndStartDtBetween(Calendar calendar, LocalDateTime startDt, LocalDateTime endDt);
+    List<Event> findByDiaryAndStartDtBetween(Diary diary, LocalDateTime startDt, LocalDateTime endDt);
 
-    List<Event> findByCalendarAndDelYn(Calendar calendar, String delYn);
+    List<Event> findByDiaryAndDelYn(Diary diary, String delYn);
 }

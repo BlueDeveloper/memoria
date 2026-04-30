@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EventCreateRequest {
 
-    @NotNull(message = "캘린더 ID는 필수 입력값입니다.")
-    private Long calendarId;
+    @NotNull(message = "다이어리 ID는 필수 입력값입니다.")
+    private Long diaryId;
 
     @NotBlank(message = "일정 제목은 필수 입력값입니다.")
     @Size(max = 300, message = "일정 제목은 300자 이하로 입력해주세요.")

@@ -1,9 +1,9 @@
 package com.brp.memoria.domain.event.service;
 
-import com.brp.memoria.domain.calendar.entity.CalendarMember;
-import com.brp.memoria.domain.calendar.exception.CalendarErrorCode;
-import com.brp.memoria.domain.calendar.exception.CalendarException;
-import com.brp.memoria.domain.calendar.repository.CalendarMemberRepository;
+import com.brp.memoria.domain.diary.entity.DiaryMember;
+import com.brp.memoria.domain.diary.exception.DiaryErrorCode;
+import com.brp.memoria.domain.diary.exception.DiaryException;
+import com.brp.memoria.domain.diary.repository.DiaryMemberRepository;
 import com.brp.memoria.domain.event.dto.CommentCreateRequest;
 import com.brp.memoria.domain.event.dto.CommentResponse;
 import com.brp.memoria.domain.event.entity.Event;
@@ -32,14 +32,14 @@ public class CommentService {
 
     private final EventCommentRepository eventCommentRepository;
     private final EventRepository eventRepository;
-    private final CalendarMemberRepository calendarMemberRepository;
+    private final DiaryMemberRepository diaryMemberRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
     public CommentResponse addComment(Long memberId, Long eventId, CommentCreateRequest request) {
         Event event = findEventById(eventId);
         Member member = findMemberById(memberId);
-        findCalendarMember(event, member);
+        findDiaryMember(event, member);
 
         EventComment comment = EventComment.builder()
                 .event(event)
@@ -55,7 +55,7 @@ public class CommentService {
     public List<CommentResponse> getComments(Long memberId, Long eventId) {
         Event event = findEventById(eventId);
         Member member = findMemberById(memberId);
-        findCalendarMember(event, member);
+        findDiaryMember(event, member);
 
         List<EventComment> comments = eventCommentRepository.findByEventAndDelYn(event, "N");
 
@@ -76,9 +76,9 @@ public class CommentService {
 
         if (!isAuthor) {
             // 관리자/소유자인지 확인
-            CalendarMember calendarMember = findCalendarMember(comment.getEvent(), member);
-            boolean isAdminOrOwner = calendarMember.getRole() == CalendarMember.CalendarRole.OWNER
-                    || calendarMember.getRole() == CalendarMember.CalendarRole.ADMIN;
+            DiaryMember diaryMember = findDiaryMember(comment.getEvent(), member);
+            boolean isAdminOrOwner = diaryMember.getRole() == DiaryMember.DiaryRole.OWNER
+                    || diaryMember.getRole() == DiaryMember.DiaryRole.ADMIN;
 
             if (!isAdminOrOwner) {
                 throw new EventException(EventErrorCode.NOT_COMMENT_AUTHOR);
@@ -102,9 +102,9 @@ public class CommentService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "회원을 찾을 수 없습니다."));
     }
 
-    private CalendarMember findCalendarMember(Event event, Member member) {
-        return calendarMemberRepository.findByCalendarAndMember(event.getCalendar(), member)
-                .filter(cm -> "N".equals(cm.getDelYn()))
-                .orElseThrow(() -> new CalendarException(CalendarErrorCode.NOT_CALENDAR_MEMBER));
+    private DiaryMember findDiaryMember(Event event, Member member) {
+        return diaryMemberRepository.findByDiaryAndMember(event.getDiary(), member)
+                .filter(dm -> "N".equals(dm.getDelYn()))
+                .orElseThrow(() -> new DiaryException(DiaryErrorCode.NOT_DIARY_MEMBER));
     }
 }

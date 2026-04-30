@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class EventResponse {
 
     private Long eventId;
-    private Long calendarId;
+    private Long diaryId;
     private String title;
     private String description;
     private String location;
@@ -28,7 +28,7 @@ public class EventResponse {
     public static EventResponse from(Event event) {
         return new EventResponse(
                 event.getEventId(),
-                event.getCalendar().getCalendarId(),
+                event.getDiary().getDiaryId(),
                 event.getTitle(),
                 event.getDescription(),
                 event.getLocation(),

@@ -1,8 +1,10 @@
 package com.brp.memoria.global.exception;
 
 import com.brp.memoria.domain.auth.exception.AuthException;
-import com.brp.memoria.domain.calendar.exception.CalendarException;
+import com.brp.memoria.domain.diary.exception.DiaryException;
 import com.brp.memoria.domain.event.exception.EventException;
+import com.brp.memoria.domain.ticket.exception.TicketException;
+import com.brp.memoria.domain.shop.exception.ShopException;
 import com.brp.memoria.global.common.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,12 +27,12 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(e.getAuthErrorCode().name(), e.getMessage()));
     }
 
-    @ExceptionHandler(CalendarException.class)
-    protected ResponseEntity<ApiResponse<Void>> handleCalendarException(CalendarException e) {
-        log.error("CalendarException: {}", e.getMessage());
+    @ExceptionHandler(DiaryException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleDiaryException(DiaryException e) {
+        log.error("DiaryException: {}", e.getMessage());
         return ResponseEntity
-                .status(e.getCalendarErrorCode().getHttpStatus())
-                .body(ApiResponse.fail(e.getCalendarErrorCode().name(), e.getMessage()));
+                .status(e.getDiaryErrorCode().getHttpStatus())
+                .body(ApiResponse.fail(e.getDiaryErrorCode().name(), e.getMessage()));
     }
 
     @ExceptionHandler(EventException.class)
@@ -39,6 +41,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getEventErrorCode().getHttpStatus())
                 .body(ApiResponse.fail(e.getEventErrorCode().name(), e.getMessage()));
+    }
+
+    @ExceptionHandler(TicketException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleTicketException(TicketException e) {
+        log.error("TicketException: {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getTicketErrorCode().getHttpStatus())
+                .body(ApiResponse.fail(e.getTicketErrorCode().name(), e.getMessage()));
+    }
+
+    @ExceptionHandler(ShopException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleShopException(ShopException e) {
+        log.error("ShopException: {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getShopErrorCode().getHttpStatus())
+                .body(ApiResponse.fail(e.getShopErrorCode().name(), e.getMessage()));
     }
 
     @ExceptionHandler(BusinessException.class)
