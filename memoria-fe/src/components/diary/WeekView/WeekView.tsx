@@ -14,28 +14,28 @@ import {
   differenceInMinutes,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { useCalendarStore } from '@/store/calendarStore';
+import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
-import { CalendarEvent } from '@/types/calendar';
-import EventModal from '@/components/calendar/EventModal/EventModal';
-import EventDetailModal from '@/components/calendar/EventDetailModal/EventDetailModal';
-import AuthPromptModal from '@/components/calendar/AuthPromptModal/AuthPromptModal';
+import { DiaryEvent } from '@/types/diary';
+import EventModal from '@/components/diary/EventModal/EventModal';
+import EventDetailModal from '@/components/diary/EventDetailModal/EventDetailModal';
+import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
 import styles from './WeekView.module.css';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 const SLOT_HEIGHT = 60; // px per hour
 
 export default function WeekView() {
-  const currentDate = useCalendarStore((s) => s.currentDate);
-  const events = useCalendarStore((s) => s.events);
-  const visibleCalendarIds = useCalendarStore((s) => s.visibleCalendarIds);
-  const calendars = useCalendarStore((s) => s.calendars);
+  const currentDate = useDiaryStore((s) => s.currentDate);
+  const events = useDiaryStore((s) => s.events);
+  const visibleDiaryIds = useDiaryStore((s) => s.visibleDiaryIds);
+  const diaries = useDiaryStore((s) => s.diaries);
   const gridRef = useRef<HTMLDivElement>(null);
   const [now, setNow] = useState(new Date());
   const [showEventModal, setShowEventModal] = useState(false);
   const [modalDate, setModalDate] = useState<Date | null>(null);
   const [modalHour, setModalHour] = useState<number>(9);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<DiaryEvent | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -47,8 +47,8 @@ export default function WeekView() {
   }, [currentDate]);
 
   const filteredEvents = useMemo(
-    () => events.filter((e) => visibleCalendarIds.has(e.calendarId)),
-    [events, visibleCalendarIds]
+    () => events.filter((e) => visibleDiaryIds.has(e.diaryId)),
+    [events, visibleDiaryIds]
   );
 
   const allDayEvents = useMemo(
@@ -76,14 +76,14 @@ export default function WeekView() {
     }
   }, []);
 
-  const getEventsForDay = (day: Date): CalendarEvent[] => {
+  const getEventsForDay = (day: Date): DiaryEvent[] => {
     return timedEvents.filter((event) => {
       const start = parseISO(event.startDt);
       return isSameDay(day, start);
     });
   };
 
-  const getAllDayEventsForDay = (day: Date): CalendarEvent[] => {
+  const getAllDayEventsForDay = (day: Date): DiaryEvent[] => {
     return allDayEvents.filter((event) => {
       const start = parseISO(event.startDt);
       const end = parseISO(event.endDt);
@@ -91,13 +91,13 @@ export default function WeekView() {
     });
   };
 
-  const getEventColor = (event: CalendarEvent): string => {
+  const getEventColor = (event: DiaryEvent): string => {
     if (event.color) return event.color;
-    const cal = calendars.find((c) => c.calendarId === event.calendarId);
-    return cal?.color ?? 'var(--color-primary)';
+    const diary = diaries.find((d) => d.diaryId === event.diaryId);
+    return diary?.color ?? 'var(--color-primary)';
   };
 
-  const getEventPosition = (event: CalendarEvent) => {
+  const getEventPosition = (event: DiaryEvent) => {
     const start = parseISO(event.startDt);
     const end = parseISO(event.endDt);
     const startMinutes = getHours(start) * 60 + getMinutes(start);
@@ -121,7 +121,7 @@ export default function WeekView() {
     setShowEventModal(true);
   };
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = (event: DiaryEvent) => {
     setSelectedEvent(event);
     setShowDetailModal(true);
   };

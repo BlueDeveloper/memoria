@@ -13,8 +13,8 @@ import {
   Trash2,
   Send,
 } from 'lucide-react';
-import { useCalendarStore } from '@/store/calendarStore';
-import { CalendarEvent } from '@/types/calendar';
+import { useDiaryStore } from '@/store/diaryStore';
+import { DiaryEvent } from '@/types/diary';
 import styles from './EventDetailModal.module.css';
 
 interface Comment {
@@ -33,14 +33,14 @@ const REPEAT_LABELS: Record<string, string> = {
 };
 
 interface Props {
-  event: CalendarEvent;
+  event: DiaryEvent;
   onClose: () => void;
   onEdit: () => void;
 }
 
 export default function EventDetailModal({ event, onClose, onEdit }: Props) {
-  const calendars = useCalendarStore((s) => s.calendars);
-  const calendar = calendars.find((c) => c.calendarId === event.calendarId);
+  const diaries = useDiaryStore((s) => s.diaries);
+  const diary = diaries.find((d) => d.diaryId === event.diaryId);
 
   const [comments, setComments] = useState<Comment[]>([
     // 목업 댓글
@@ -48,7 +48,7 @@ export default function EventDetailModal({ event, onClose, onEdit }: Props) {
   ]);
   const [newComment, setNewComment] = useState('');
 
-  const eventColor = event.color ?? calendar?.color ?? 'var(--color-primary)';
+  const eventColor = event.color ?? diary?.color ?? 'var(--color-primary)';
 
   const formatDateTime = () => {
     const start = parseISO(event.startDt);
@@ -145,10 +145,10 @@ export default function EventDetailModal({ event, onClose, onEdit }: Props) {
             <div className={styles.description}>{event.description}</div>
           )}
 
-          {/* 캘린더 + 생성자 */}
+          {/* 다이어리 + 생성자 */}
           <div className={styles.meta}>
-            <span className={styles.calendarBadge} style={{ backgroundColor: calendar?.color }}>
-              {calendar?.name}
+            <span className={styles.calendarBadge} style={{ backgroundColor: diary?.color }}>
+              {diary?.name}
             </span>
             <span className={styles.creator}>작성: {event.creatorNickname}</span>
           </div>

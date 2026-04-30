@@ -7,8 +7,8 @@ import { z } from 'zod';
 import { X } from 'lucide-react';
 import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Input/Input';
-import { createCalendar } from '@/lib/calendarApi';
-import styles from './CreateCalendarModal.module.css';
+import { createDiary } from '@/lib/diaryApi';
+import styles from './CreateDiaryModal.module.css';
 
 const PRESET_COLORS = [
   '#4A90D9', '#5B6ABF', '#7B68EE', '#9B59B6',
@@ -25,7 +25,7 @@ const GROUP_TYPES = [
 ];
 
 const schema = z.object({
-  name: z.string().min(1, '캘린더 이름을 입력해 주세요').max(50, '50자 이내로 입력해 주세요'),
+  name: z.string().min(1, '다이어리 이름을 입력해 주세요').max(50, '50자 이내로 입력해 주세요'),
   description: z.string().max(200, '200자 이내로 입력해 주세요').optional(),
 });
 
@@ -33,9 +33,10 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
   onClose: () => void;
+  onCreated?: () => void;
 }
 
-export default function CreateCalendarModal({ onClose }: Props) {
+export default function CreateDiaryModal({ onClose, onCreated }: Props) {
   const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
   const [selectedGroupType, setSelectedGroupType] = useState('COUPLE');
 
@@ -49,14 +50,15 @@ export default function CreateCalendarModal({ onClose }: Props) {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await createCalendar({
+      await createDiary({
         name: data.name,
         description: data.description,
         color: selectedColor,
-        groupType: selectedGroupType,
+        diaryType: selectedGroupType,
       });
+      onCreated?.();
     } catch (err) {
-      console.error('캘린더 생성 실패:', err);
+      console.error('다이어리 생성 실패:', err);
     }
     onClose();
   };
@@ -65,7 +67,7 @@ export default function CreateCalendarModal({ onClose }: Props) {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>새 캘린더</h2>
+          <h2 className={styles.title}>새 다이어리</h2>
           <button className={styles.closeButton} onClick={onClose}>
             <X size={20} />
           </button>
@@ -73,8 +75,8 @@ export default function CreateCalendarModal({ onClose }: Props) {
 
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <Input
-            label="캘린더 이름"
-            placeholder="예: 우리 커플 일정"
+            label="다이어리 이름"
+            placeholder="예: 우리 커플 다이어리"
             error={errors.name?.message}
             registration={register('name')}
           />
@@ -118,7 +120,7 @@ export default function CreateCalendarModal({ onClose }: Props) {
             <label className={styles.label}>설명 (선택)</label>
             <textarea
               className={styles.textarea}
-              placeholder="캘린더에 대한 간단한 설명"
+              placeholder="다이어리에 대한 간단한 설명"
               rows={3}
               {...register('description')}
             />

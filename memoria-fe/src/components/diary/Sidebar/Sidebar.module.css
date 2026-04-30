@@ -16,7 +16,6 @@
 }
 
 .section {
-  flex: 1;
   overflow-y: auto;
 }
 
@@ -30,27 +29,21 @@
   margin-bottom: 8px;
 }
 
-.calendarList {
+.diaryList {
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-bottom: 16px;
 }
 
-.calendarItem {
+.diaryItem {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px;
   border-radius: 6px;
-  cursor: pointer;
-  transition: background var(--transition);
   font-size: 14px;
   color: var(--color-text);
-}
-
-.calendarItem:hover {
-  background: rgba(27, 42, 74, 0.04);
 }
 
 .checkbox {
@@ -69,20 +62,14 @@
   border-color: transparent;
 }
 
-.checkmark {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-}
-
-.calendarName {
+.diaryName {
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.addButton {
+.backButton {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -93,9 +80,10 @@
   font-weight: 500;
   transition: background var(--transition);
   width: 100%;
+  margin-bottom: 8px;
 }
 
-.addButton:hover {
+.backButton:hover {
   background: rgba(200, 169, 110, 0.08);
 }
 

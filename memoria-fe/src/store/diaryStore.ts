@@ -5,48 +5,48 @@ import {
   addWeeks,
   subWeeks,
 } from 'date-fns';
-import { Calendar, CalendarEvent, ViewMode } from '@/types/calendar';
+import { Diary, DiaryEvent, ViewMode } from '@/types/diary';
 
-interface CalendarState {
-  calendars: Calendar[];
-  selectedCalendarId: number | null;
-  events: CalendarEvent[];
+interface DiaryState {
+  diaries: Diary[];
+  selectedDiaryId: number | null;
+  events: DiaryEvent[];
   currentDate: Date;
   viewMode: ViewMode;
-  visibleCalendarIds: Set<number>;
+  visibleDiaryIds: Set<number>;
   sidebarOpen: boolean;
 
-  setCalendars: (calendars: Calendar[]) => void;
-  selectCalendar: (id: number | null) => void;
-  setEvents: (events: CalendarEvent[]) => void;
+  setDiaries: (diaries: Diary[]) => void;
+  selectDiary: (id: number | null) => void;
+  setEvents: (events: DiaryEvent[]) => void;
   setCurrentDate: (date: Date) => void;
   setViewMode: (mode: ViewMode) => void;
   navigateMonth: (direction: 1 | -1) => void;
   navigateWeek: (direction: 1 | -1) => void;
-  toggleCalendarVisibility: (id: number) => void;
+  toggleDiaryVisibility: (id: number) => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
 }
 
-export const useCalendarStore = create<CalendarState>((set) => ({
-  calendars: [],
-  selectedCalendarId: null,
+export const useDiaryStore = create<DiaryState>((set) => ({
+  diaries: [],
+  selectedDiaryId: null,
   events: [],
   currentDate: new Date(),
   viewMode: 'month',
-  visibleCalendarIds: new Set<number>(),
+  visibleDiaryIds: new Set<number>(),
   sidebarOpen: true,
 
-  setCalendars: (calendars) =>
+  setDiaries: (diaries) =>
     set((state) => ({
-      calendars,
-      visibleCalendarIds: new Set([
-        ...state.visibleCalendarIds,
-        ...calendars.map((c) => c.calendarId),
+      diaries,
+      visibleDiaryIds: new Set([
+        ...state.visibleDiaryIds,
+        ...diaries.map((d) => d.diaryId),
       ]),
     })),
 
-  selectCalendar: (id) => set({ selectedCalendarId: id }),
+  selectDiary: (id) => set({ selectedDiaryId: id }),
 
   setEvents: (events) => set({ events }),
 
@@ -70,15 +70,15 @@ export const useCalendarStore = create<CalendarState>((set) => ({
           : subWeeks(state.currentDate, 1),
     })),
 
-  toggleCalendarVisibility: (id) =>
+  toggleDiaryVisibility: (id) =>
     set((state) => {
-      const next = new Set(state.visibleCalendarIds);
+      const next = new Set(state.visibleDiaryIds);
       if (next.has(id)) {
         next.delete(id);
       } else {
         next.add(id);
       }
-      return { visibleCalendarIds: next };
+      return { visibleDiaryIds: next };
     }),
 
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),

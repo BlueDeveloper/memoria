@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   format,
   startOfMonth,
@@ -15,27 +16,26 @@ import {
   subMonths,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Plus, Settings, ChevronLeft, ChevronRight, Check } from 'lucide-react';
-import { useCalendarStore } from '@/store/calendarStore';
+import { Settings, ChevronLeft, ChevronRight, Check, ArrowLeft } from 'lucide-react';
+import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
-import CreateCalendarModal from '@/components/calendar/CreateCalendarModal/CreateCalendarModal';
-import AuthPromptModal from '@/components/calendar/AuthPromptModal/AuthPromptModal';
 import styles from './Sidebar.module.css';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 
 export default function Sidebar() {
-  const calendars = useCalendarStore((s) => s.calendars);
-  const visibleCalendarIds = useCalendarStore((s) => s.visibleCalendarIds);
-  const toggleCalendarVisibility = useCalendarStore((s) => s.toggleCalendarVisibility);
-  const setCurrentDate = useCalendarStore((s) => s.setCurrentDate);
-  const currentDate = useCalendarStore((s) => s.currentDate);
+  const router = useRouter();
+  const diaries = useDiaryStore((s) => s.diaries);
+  const selectedDiaryId = useDiaryStore((s) => s.selectedDiaryId);
+  const visibleDiaryIds = useDiaryStore((s) => s.visibleDiaryIds);
+  const toggleDiaryVisibility = useDiaryStore((s) => s.toggleDiaryVisibility);
+  const setCurrentDate = useDiaryStore((s) => s.setCurrentDate);
+  const currentDate = useDiaryStore((s) => s.currentDate);
   const user = useAuthStore((s) => s.user);
 
   const [miniDate, setMiniDate] = useState(new Date());
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  const currentDiary = diaries.find((d) => d.diaryId === selectedDiaryId);
 
   const miniDays = useMemo(() => {
     const monthStart = startOfMonth(miniDate);
@@ -49,46 +49,39 @@ export default function Sidebar() {
     setCurrentDate(day);
   };
 
+  const handleBackToIntro = () => {
+    router.push('/');
+  };
+
   const nickname = user?.nickname ?? '사용자';
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.logo}>Memoria</div>
 
-      {/* 캘린더 목록 */}
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>내 캘린더</div>
-        <div className={styles.calendarList}>
-          {calendars.map((cal) => {
-            const visible = visibleCalendarIds.has(cal.calendarId);
-            return (
+      {/* 현재 다이어리 정보 */}
+      {currentDiary && (
+        <div className={styles.section}>
+          <div className={styles.sectionTitle}>현재 다이어리</div>
+          <div className={styles.diaryList}>
+            <div className={styles.diaryItem}>
               <div
-                key={cal.calendarId}
-                className={styles.calendarItem}
-                onClick={() => toggleCalendarVisibility(cal.calendarId)}
+                className={`${styles.checkbox} ${styles.checkboxChecked}`}
+                style={{ backgroundColor: currentDiary.color }}
               >
-                <div
-                  className={`${styles.checkbox} ${visible ? styles.checkboxChecked : ''}`}
-                  style={{ backgroundColor: visible ? cal.color : undefined }}
-                >
-                  {visible && (
-                    <Check size={10} color="#fff" strokeWidth={3} />
-                  )}
-                </div>
-                <span className={styles.calendarName}>{cal.name}</span>
+                <Check size={10} color="#fff" strokeWidth={3} />
               </div>
-            );
-          })}
+              <span className={styles.diaryName}>{currentDiary.name}</span>
+            </div>
+          </div>
         </div>
+      )}
 
-        <button
-          className={styles.addButton}
-          onClick={() => isAuthenticated ? setShowCreateModal(true) : setShowAuthPrompt(true)}
-        >
-          <Plus size={16} />
-          새 캘린더
-        </button>
-      </div>
+      {/* 다른 다이어리로 이동 */}
+      <button className={styles.backButton} onClick={handleBackToIntro}>
+        <ArrowLeft size={16} />
+        다른 다이어리로 이동
+      </button>
 
       {/* 미니 달력 */}
       <div className={styles.miniCalendar}>
@@ -153,16 +146,6 @@ export default function Sidebar() {
           <Settings size={16} />
         </button>
       </div>
-
-      {/* 캘린더 생성 모달 */}
-      {showCreateModal && (
-        <CreateCalendarModal onClose={() => setShowCreateModal(false)} />
-      )}
-
-      {/* 인증 유도 모달 */}
-      {showAuthPrompt && (
-        <AuthPromptModal onClose={() => setShowAuthPrompt(false)} />
-      )}
     </div>
   );
 }

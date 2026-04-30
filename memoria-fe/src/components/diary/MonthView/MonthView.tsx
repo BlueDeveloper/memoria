@@ -14,28 +14,28 @@ import {
   parseISO,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { useCalendarStore } from '@/store/calendarStore';
+import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
-import { CalendarEvent } from '@/types/calendar';
-import EventModal from '@/components/calendar/EventModal/EventModal';
-import EventDetailModal from '@/components/calendar/EventDetailModal/EventDetailModal';
-import AuthPromptModal from '@/components/calendar/AuthPromptModal/AuthPromptModal';
+import { DiaryEvent } from '@/types/diary';
+import EventModal from '@/components/diary/EventModal/EventModal';
+import EventDetailModal from '@/components/diary/EventDetailModal/EventDetailModal';
+import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
 import styles from './MonthView.module.css';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 const MAX_VISIBLE_EVENTS = 3;
 
 export default function MonthView() {
-  const currentDate = useCalendarStore((s) => s.currentDate);
-  const events = useCalendarStore((s) => s.events);
-  const visibleCalendarIds = useCalendarStore((s) => s.visibleCalendarIds);
-  const calendars = useCalendarStore((s) => s.calendars);
-  const setCurrentDate = useCalendarStore((s) => s.setCurrentDate);
+  const currentDate = useDiaryStore((s) => s.currentDate);
+  const events = useDiaryStore((s) => s.events);
+  const visibleDiaryIds = useDiaryStore((s) => s.visibleDiaryIds);
+  const diaries = useDiaryStore((s) => s.diaries);
+  const setCurrentDate = useDiaryStore((s) => s.setCurrentDate);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const [showEventModal, setShowEventModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<DiaryEvent | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
@@ -48,11 +48,11 @@ export default function MonthView() {
   }, [currentDate]);
 
   const filteredEvents = useMemo(
-    () => events.filter((e) => visibleCalendarIds.has(e.calendarId)),
-    [events, visibleCalendarIds]
+    () => events.filter((e) => visibleDiaryIds.has(e.diaryId)),
+    [events, visibleDiaryIds]
   );
 
-  const getEventsForDay = (day: Date): CalendarEvent[] => {
+  const getEventsForDay = (day: Date): DiaryEvent[] => {
     return filteredEvents.filter((event) => {
       const start = parseISO(event.startDt);
       const end = parseISO(event.endDt);
@@ -60,10 +60,10 @@ export default function MonthView() {
     });
   };
 
-  const getEventColor = (event: CalendarEvent): string => {
+  const getEventColor = (event: DiaryEvent): string => {
     if (event.color) return event.color;
-    const cal = calendars.find((c) => c.calendarId === event.calendarId);
-    return cal?.color ?? 'var(--color-primary)';
+    const diary = diaries.find((d) => d.diaryId === event.diaryId);
+    return diary?.color ?? 'var(--color-primary)';
   };
 
   const handleDayClick = (day: Date) => {
@@ -76,7 +76,7 @@ export default function MonthView() {
     setShowEventModal(true);
   };
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = (event: DiaryEvent) => {
     setSelectedEvent(event);
     setShowDetailModal(true);
   };

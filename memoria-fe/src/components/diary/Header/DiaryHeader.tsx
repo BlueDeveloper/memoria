@@ -3,18 +3,18 @@
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Bell, Menu } from 'lucide-react';
-import { useCalendarStore } from '@/store/calendarStore';
+import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
-import styles from './CalendarHeader.module.css';
+import styles from './DiaryHeader.module.css';
 
-export default function CalendarHeader() {
-  const currentDate = useCalendarStore((s) => s.currentDate);
-  const viewMode = useCalendarStore((s) => s.viewMode);
-  const setViewMode = useCalendarStore((s) => s.setViewMode);
-  const setCurrentDate = useCalendarStore((s) => s.setCurrentDate);
-  const navigateMonth = useCalendarStore((s) => s.navigateMonth);
-  const navigateWeek = useCalendarStore((s) => s.navigateWeek);
-  const toggleSidebar = useCalendarStore((s) => s.toggleSidebar);
+export default function DiaryHeader() {
+  const currentDate = useDiaryStore((s) => s.currentDate);
+  const viewMode = useDiaryStore((s) => s.viewMode);
+  const setViewMode = useDiaryStore((s) => s.setViewMode);
+  const setCurrentDate = useDiaryStore((s) => s.setCurrentDate);
+  const navigateMonth = useDiaryStore((s) => s.navigateMonth);
+  const navigateWeek = useDiaryStore((s) => s.navigateWeek);
+  const toggleSidebar = useDiaryStore((s) => s.toggleSidebar);
   const user = useAuthStore((s) => s.user);
 
   const handlePrev = () => {

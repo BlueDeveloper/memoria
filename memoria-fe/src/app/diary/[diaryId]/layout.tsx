@@ -1,17 +1,17 @@
 'use client';
 
-import { useCalendarStore } from '@/store/calendarStore';
-import Sidebar from '@/components/calendar/Sidebar/Sidebar';
-import CalendarHeader from '@/components/calendar/Header/CalendarHeader';
+import { useDiaryStore } from '@/store/diaryStore';
+import Sidebar from '@/components/diary/Sidebar/Sidebar';
+import DiaryHeader from '@/components/diary/Header/DiaryHeader';
 import styles from './layout.module.css';
 
-export default function CalendarLayout({
+export default function DiaryLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const sidebarOpen = useCalendarStore((s) => s.sidebarOpen);
-  const setSidebarOpen = useCalendarStore((s) => s.setSidebarOpen);
+  const sidebarOpen = useDiaryStore((s) => s.sidebarOpen);
+  const setSidebarOpen = useDiaryStore((s) => s.setSidebarOpen);
 
   return (
     <div className={styles.wrapper}>
@@ -36,7 +36,7 @@ export default function CalendarLayout({
 
       {/* 메인 */}
       <div className={styles.main}>
-        <CalendarHeader />
+        <DiaryHeader />
         <div className={styles.content}>{children}</div>
       </div>
     </div>

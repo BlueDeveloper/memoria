@@ -8,9 +8,9 @@ import { format } from 'date-fns';
 import { X, MapPin, AlarmClock, Repeat, Palette } from 'lucide-react';
 import Button from '@/components/common/Button/Button';
 import Input from '@/components/common/Input/Input';
-import { useCalendarStore } from '@/store/calendarStore';
-import { CalendarEvent } from '@/types/calendar';
-import { createEvent, updateEvent } from '@/lib/calendarApi';
+import { useDiaryStore } from '@/store/diaryStore';
+import { DiaryEvent } from '@/types/diary';
+import { createEvent, updateEvent } from '@/lib/diaryApi';
 import styles from './EventModal.module.css';
 
 const REPEAT_OPTIONS = [
@@ -53,15 +53,16 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
   onClose: () => void;
-  event?: CalendarEvent | null;
+  event?: DiaryEvent | null;
   initialDate?: Date;
   initialHour?: number;
 }
 
 export default function EventModal({ onClose, event, initialDate, initialHour }: Props) {
-  const calendars = useCalendarStore((s) => s.calendars);
-  const [selectedCalendarId, setSelectedCalendarId] = useState(
-    event?.calendarId ?? calendars[0]?.calendarId ?? 0
+  const diaries = useDiaryStore((s) => s.diaries);
+  const selectedDiaryId = useDiaryStore((s) => s.selectedDiaryId);
+  const [currentDiaryId, setCurrentDiaryId] = useState(
+    event?.diaryId ?? selectedDiaryId ?? diaries[0]?.diaryId ?? 0
   );
   const [selectedColor, setSelectedColor] = useState(event?.color ?? '');
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -124,7 +125,7 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
       : `${data.endDate}T${data.endTime}:00`;
 
     const payload = {
-      calendarId: selectedCalendarId,
+      diaryId: currentDiaryId,
       title: data.title,
       description: data.description || undefined,
       location: data.location || undefined,
@@ -167,17 +168,17 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
             registration={register('title')}
           />
 
-          {/* 캘린더 선택 */}
+          {/* 다이어리 선택 */}
           <div className={styles.field}>
-            <label className={styles.label}>캘린더</label>
+            <label className={styles.label}>다이어리</label>
             <select
               className={styles.select}
-              value={selectedCalendarId}
-              onChange={(e) => setSelectedCalendarId(Number(e.target.value))}
+              value={currentDiaryId}
+              onChange={(e) => setCurrentDiaryId(Number(e.target.value))}
             >
-              {calendars.map((cal) => (
-                <option key={cal.calendarId} value={cal.calendarId}>
-                  {cal.name}
+              {diaries.map((diary) => (
+                <option key={diary.diaryId} value={diary.diaryId}>
+                  {diary.name}
                 </option>
               ))}
             </select>

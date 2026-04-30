@@ -1,21 +1,25 @@
-export type CalendarRole = 'OWNER' | 'ADMIN' | 'MEMBER';
+export type DiaryRole = 'OWNER' | 'ADMIN' | 'MEMBER';
+export type DiaryType = 'GENERAL' | 'COUPLE' | 'FAMILY' | 'TEAM' | 'WEDDING';
 export type RepeatType = 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
 export type ViewMode = 'month' | 'week';
 
-export interface Calendar {
-  calendarId: number;
+export interface Diary {
+  diaryId: number;
   name: string;
   description?: string;
   color: string;
+  diaryType: DiaryType;
+  logoId: number | null;
+  themeId: number | null;
   inviteCode: string;
   ownerNickname: string;
   memberCount: number;
-  myRole: CalendarRole;
+  myRole: DiaryRole;
 }
 
-export interface CalendarEvent {
+export interface DiaryEvent {
   eventId: number;
-  calendarId: number;
+  diaryId: number;
   title: string;
   description?: string;
   location?: string;
@@ -28,29 +32,29 @@ export interface CalendarEvent {
   creatorNickname: string;
 }
 
-export interface CalendarMember {
+export interface DiaryMember {
   memberId: number;
   nickname: string;
   profileImage?: string;
   color: string;
-  role: CalendarRole;
+  role: DiaryRole;
 }
 
-export interface CreateCalendarRequest {
+export interface CreateDiaryRequest {
   name: string;
   description?: string;
   color: string;
-  groupType?: string;
+  diaryType?: string;
 }
 
-export interface UpdateCalendarRequest {
+export interface UpdateDiaryRequest {
   name?: string;
   description?: string;
   color?: string;
 }
 
 export interface CreateEventRequest {
-  calendarId: number;
+  diaryId: number;
   title: string;
   description?: string;
   location?: string;

@@ -49,7 +49,7 @@ export default function LoginPage() {
       const { data: userRes } = await api.get<ApiResponse<User>>('/api/auth/me');
       setUser(userRes.data);
 
-      router.push('/calendar');
+      router.push('/');
     } catch {
       setServerError('이메일 또는 비밀번호가 올바르지 않습니다.');
     } finally {

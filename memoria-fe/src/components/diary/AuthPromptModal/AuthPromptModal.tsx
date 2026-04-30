@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { X, CalendarPlus } from 'lucide-react';
+import { X, BookOpen } from 'lucide-react';
 import Button from '@/components/common/Button/Button';
 import { KakaoIcon, GoogleIcon, AppleIcon } from '@/components/icons/SocialIcons';
 import styles from './AuthPromptModal.module.css';
@@ -26,12 +26,12 @@ export default function AuthPromptModal({ onClose }: Props) {
         </button>
 
         <div className={styles.iconCircle}>
-          <CalendarPlus size={32} strokeWidth={1.5} />
+          <BookOpen size={32} strokeWidth={1.5} />
         </div>
 
-        <h2 className={styles.title}>일정을 함께 관리해보세요</h2>
+        <h2 className={styles.title}>다이어리를 함께 만들어보세요</h2>
         <p className={styles.description}>
-          로그인하면 캘린더를 만들고, 일정을 공유하고,<br />
+          로그인하면 다이어리를 만들고, 일정을 공유하고,<br />
           소중한 사람들과 함께 시간을 관리할 수 있어요.
         </p>
 
