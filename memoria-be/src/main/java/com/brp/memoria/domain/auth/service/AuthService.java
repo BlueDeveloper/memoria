@@ -5,6 +5,10 @@ import com.brp.memoria.domain.auth.dto.SignUpRequest;
 import com.brp.memoria.domain.auth.dto.TokenResponse;
 import com.brp.memoria.domain.auth.exception.AuthErrorCode;
 import com.brp.memoria.domain.auth.exception.AuthException;
+import com.brp.memoria.domain.diary.entity.Diary;
+import com.brp.memoria.domain.diary.entity.DiaryMember;
+import com.brp.memoria.domain.diary.repository.DiaryRepository;
+import com.brp.memoria.domain.diary.repository.DiaryMemberRepository;
 import com.brp.memoria.domain.member.entity.Member;
 import com.brp.memoria.domain.member.repository.MemberRepository;
 import com.brp.memoria.global.security.JwtTokenProvider;
@@ -26,6 +30,8 @@ public class AuthService {
     private static final String REFRESH_TOKEN_PREFIX = "RT:";
 
     private final MemberRepository memberRepository;
+    private final DiaryRepository diaryRepository;
+    private final DiaryMemberRepository diaryMemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -43,6 +49,9 @@ public class AuthService {
         );
 
         memberRepository.save(member);
+
+        // 기본 다이어리 자동 생성
+        createDefaultDiary(member);
 
         return issueTokens(member);
     }
@@ -97,6 +106,25 @@ public class AuthService {
             String redisKey = REFRESH_TOKEN_PREFIX + memberId;
             redisTemplate.delete(redisKey);
         }
+    }
+
+    private void createDefaultDiary(Member member) {
+        String inviteCode = java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+        Diary diary = Diary.builder()
+                .name("나의 다이어리")
+                .color("#1B2A4A")
+                .inviteCode(inviteCode)
+                .owner(member)
+                .diaryType("GENERAL")
+                .build();
+        diaryRepository.save(diary);
+
+        DiaryMember diaryMember = DiaryMember.builder()
+                .diary(diary)
+                .member(member)
+                .role(DiaryMember.DiaryRole.OWNER)
+                .build();
+        diaryMemberRepository.save(diaryMember);
     }
 
     private TokenResponse issueTokens(Member member) {

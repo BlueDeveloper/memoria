@@ -13,44 +13,19 @@ import CreateDiaryModal from '@/components/diary/CreateDiaryModal/CreateDiaryMod
 import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
 import styles from './page.module.css';
 
-const SAMPLE_DIARIES: Diary[] = [
-  {
-    diaryId: -1,
-    name: '커플 다이어리',
-    color: '#E91E63',
-    diaryType: 'COUPLE',
-    logoId: null,
-    themeId: null,
-    inviteCode: 'sample1',
-    ownerNickname: '샘플',
-    memberCount: 2,
-    myRole: 'OWNER',
-  },
-  {
-    diaryId: -2,
-    name: '가족 일정',
-    color: '#4A90D9',
-    diaryType: 'FAMILY',
-    logoId: null,
-    themeId: null,
-    inviteCode: 'sample2',
-    ownerNickname: '샘플',
-    memberCount: 4,
-    myRole: 'OWNER',
-  },
-  {
-    diaryId: -3,
-    name: '업무 플래너',
-    color: '#27AE60',
-    diaryType: 'TEAM',
-    logoId: null,
-    themeId: null,
-    inviteCode: 'sample3',
-    ownerNickname: '샘플',
-    memberCount: 5,
-    myRole: 'OWNER',
-  },
-];
+// 비로그인 시 샘플 다이어리 1개 (바로 둘러보기 진입)
+const SAMPLE_DIARY: Diary = {
+  diaryId: -1,
+  name: '나의 다이어리',
+  color: '#1B2A4A',
+  diaryType: 'GENERAL',
+  logoId: null,
+  themeId: null,
+  inviteCode: 'sample',
+  ownerNickname: '샘플',
+  memberCount: 1,
+  myRole: 'OWNER',
+};
 
 const DIARY_TYPE_EMOJI: Record<string, string> = {
   GENERAL: '📔',
@@ -77,11 +52,14 @@ export default function IntroPage() {
   const [diaries, setLocalDiaries] = useState<Diary[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const fetchDiaries = useCallback(async () => {
     if (!isAuthenticated) {
-      setLocalDiaries(SAMPLE_DIARIES);
-      setDiaries(SAMPLE_DIARIES);
+      // 비로그인: 샘플 1개로 바로 다이어리 진입
+      setLocalDiaries([SAMPLE_DIARY]);
+      setDiaries([SAMPLE_DIARY]);
+      setLoaded(true);
       return;
     }
     try {
@@ -89,14 +67,22 @@ export default function IntroPage() {
       setLocalDiaries(data);
       setDiaries(data);
     } catch {
-      setLocalDiaries(SAMPLE_DIARIES);
-      setDiaries(SAMPLE_DIARIES);
+      setLocalDiaries([SAMPLE_DIARY]);
+      setDiaries([SAMPLE_DIARY]);
     }
+    setLoaded(true);
   }, [isAuthenticated, setDiaries]);
 
   useEffect(() => {
     fetchDiaries();
   }, [fetchDiaries]);
+
+  // 다이어리 1개면 인트로 스킵 → 바로 진입
+  useEffect(() => {
+    if (loaded && diaries.length === 1) {
+      router.replace(`/diary?id=${diaries[0].diaryId}`);
+    }
+  }, [loaded, diaries, router]);
 
   const handleDiaryClick = (diary: Diary) => {
     router.push(`/diary?id=${diary.diaryId}`);

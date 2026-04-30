@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class DiaryService {
 
-    private static final int FREE_DIARY_LIMIT = 2;
+    private static final int FREE_DIARY_LIMIT = 1;
 
     private final DiaryRepository diaryRepository;
     private final DiaryMemberRepository diaryMemberRepository;
