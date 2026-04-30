@@ -44,12 +44,24 @@
 
 ## 배포 정보
 
-| 항목        | 값                               |
-| --------- | ------------------------------- |
-| **레포**    | BlueDeveloper/memoria (생성 예정)   |
+| 항목 | 값 |
+|------|------|
+| **레포** | BlueDeveloper/memoria |
 | **FE 배포** | Cloudflare Pages (main push 자동) |
-| **BE 배포** | OCI (152.69.235.170) Jenkins    |
-| **도메인**   | 미정                              |
+| **BE 배포** | OCI (152.69.235.170:8084) systemctl |
+| **BE 서비스** | memoria-be.service (systemd) |
+| **DB 스키마** | MEMORIA (dev/prod 공유) |
+| **도메인** | 미정 |
+
+### 환경 분리
+
+| 항목 | 개발 (dev) | 운영 (prod) |
+|------|-----------|------------|
+| FE URL | localhost:3000 | memoria.pages.dev |
+| BE URL | localhost:8080 | 152.69.235.170:8084 |
+| DB | MEMORIA@BlueAutoDB (공유) | MEMORIA@BlueAutoDB (공유) |
+| Redis | localhost:6379 | localhost:6379 (서버 내) |
+| BE 배포 | 로컬 gradlew bootRun | scripts/deploy-be.sh |
 
 ## 벤치마킹 대상
 
@@ -92,6 +104,11 @@ Memoria/
 2. ~~타임트리 벤치마킹~~ ✅ (docs/work-log/2026-04-30-timetree-benchmarking.md)
 3. ~~기술 스택 확정~~ ✅ (docs/planning/01-feature-definition.md)
 4. ~~프로젝트 초기 세팅~~ ✅ (memoria-fe + memoria-be)
-5. 화면 설계 (와이어프레임)
-6. 도메인 엔티티 구현
+5. ~~화면 설계~~ ✅ (docs/planning/03-wireframe.md)
+6. ~~도메인 엔티티 + API~~ ✅ (인증/캘린더/이벤트/댓글)
+7. ~~BE 배포~~ ✅ (OCI 152.69.235.170:8084)
+8. ~~환경 분리~~ ✅ (dev/prod)
+9. OCI VCN 보안 목록에 8084 포트 추가 (OCI 콘솔)
+10. FE Cloudflare Pages 배포
+11. FE ↔ BE API 연동 실 테스트
 
