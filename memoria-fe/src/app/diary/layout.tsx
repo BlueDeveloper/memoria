@@ -15,13 +15,11 @@ export default function DiaryLayout({
 
   return (
     <div className={styles.wrapper}>
-      {/* 모바일 오버레이 */}
       <div
         className={`${styles.overlay} ${!sidebarOpen ? styles.overlayHidden : ''}`}
         onClick={() => setSidebarOpen(false)}
       />
 
-      {/* 사이드바 */}
       <aside
         className={[
           styles.sidebar,
@@ -34,7 +32,6 @@ export default function DiaryLayout({
         <Sidebar />
       </aside>
 
-      {/* 메인 */}
       <div className={styles.main}>
         <DiaryHeader />
         <div className={styles.content}>{children}</div>

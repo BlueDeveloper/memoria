@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
   format,
   startOfMonth,
@@ -10,13 +10,11 @@ import {
   endOfWeek,
 } from 'date-fns';
 import { useDiaryStore } from '@/store/diaryStore';
-import { useAuthStore } from '@/store/authStore';
 import MonthView from '@/components/diary/MonthView/MonthView';
 import WeekView from '@/components/diary/WeekView/WeekView';
 import { getMyDiaries, getEvents } from '@/lib/diaryApi';
 import { Diary, DiaryEvent } from '@/types/diary';
 
-// API 미연결 시 fallback 목업 데이터
 const today = new Date();
 const y = today.getFullYear();
 const m = today.getMonth();
@@ -36,9 +34,9 @@ const MOCK_EVENTS: DiaryEvent[] = [
   { eventId: 5, diaryId: 2, title: '병원 예약', startDt: new Date(y, m, d + 2, 14, 0).toISOString(), endDt: new Date(y, m, d + 2, 15, 0).toISOString(), allDay: false, repeatType: 'NONE', creatorNickname: '아빠', location: '서울대병원' },
 ];
 
-export default function DiaryPage() {
-  const params = useParams();
-  const diaryId = Number(params.diaryId);
+function DiaryContent() {
+  const searchParams = useSearchParams();
+  const diaryId = Number(searchParams.get('id') ?? 1);
 
   const viewMode = useDiaryStore((s) => s.viewMode);
   const currentDate = useDiaryStore((s) => s.currentDate);
@@ -46,14 +44,11 @@ export default function DiaryPage() {
   const setDiaries = useDiaryStore((s) => s.setDiaries);
   const setEvents = useDiaryStore((s) => s.setEvents);
   const selectDiary = useDiaryStore((s) => s.selectDiary);
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-  // 현재 다이어리 선택
   useEffect(() => {
     selectDiary(diaryId);
   }, [diaryId, selectDiary]);
 
-  // 다이어리 목록 fetch
   const fetchDiaries = useCallback(async () => {
     if (diaries.length > 0) return;
     try {
@@ -64,7 +59,6 @@ export default function DiaryPage() {
     }
   }, [diaries.length, setDiaries]);
 
-  // 이벤트 fetch (현재 뷰 기간)
   const fetchEvents = useCallback(async () => {
     const viewStart =
       viewMode === 'month'
@@ -82,7 +76,6 @@ export default function DiaryPage() {
       const events = await getEvents(diaryId, start, end);
       setEvents(events);
     } catch {
-      // 목업: 해당 다이어리의 이벤트만 필터링
       setEvents(MOCK_EVENTS.filter((e) => e.diaryId === diaryId));
     }
   }, [diaryId, currentDate, viewMode, setEvents]);
@@ -96,4 +89,12 @@ export default function DiaryPage() {
   }, [fetchEvents]);
 
   return viewMode === 'month' ? <MonthView /> : <WeekView />;
+}
+
+export default function DiaryPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 40, textAlign: 'center' }}>로딩 중...</div>}>
+      <DiaryContent />
+    </Suspense>
+  );
 }

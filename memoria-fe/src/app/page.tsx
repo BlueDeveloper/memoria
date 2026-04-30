@@ -99,7 +99,7 @@ export default function IntroPage() {
   }, [fetchDiaries]);
 
   const handleDiaryClick = (diary: Diary) => {
-    router.push(`/diary/${diary.diaryId}`);
+    router.push(`/diary?id=${diary.diaryId}`);
   };
 
   const handleAddClick = () => {
