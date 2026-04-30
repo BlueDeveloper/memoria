@@ -47,8 +47,11 @@ dependencies {
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
-    // Oracle JDBC
-    runtimeOnly("com.oracle.database.jdbc:ojdbc11:23.5.0.24.07")
+    // Oracle JDBC + Security (Wallet)
+    runtimeOnly("com.oracle.database.jdbc:ojdbc11:23.3.0.23.09")
+    runtimeOnly("com.oracle.database.security:oraclepki:23.3.0.23.09")
+    runtimeOnly("com.oracle.database.security:osdt_cert:19.3.0.0")
+    runtimeOnly("com.oracle.database.security:osdt_core:19.3.0.0")
 
     // Lombok
     compileOnly("org.projectlombok:lombok")
@@ -61,6 +64,17 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    jvmArgs = listOf(
+        "-Doracle.net.tns_admin=C:/BLUE/Project/blue/OracleCloud/Wallet_BlueAutoDB",
+        "-Doracle.net.wallet_location=(SOURCE=(METHOD=FILE)(METHOD_DATA=(DIRECTORY=C:/BLUE/Project/blue/OracleCloud/Wallet_BlueAutoDB)))",
+        "-Djavax.net.ssl.trustStore=C:/BLUE/Project/blue/OracleCloud/Wallet_BlueAutoDB/truststore.jks",
+        "-Djavax.net.ssl.trustStorePassword=Qwer1234!",
+        "-Djavax.net.ssl.keyStore=C:/BLUE/Project/blue/OracleCloud/Wallet_BlueAutoDB/keystore.jks",
+        "-Djavax.net.ssl.keyStorePassword=Qwer1234!"
+    )
 }
 
 // QueryDSL generated sources

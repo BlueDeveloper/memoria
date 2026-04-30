@@ -47,16 +47,25 @@ public class AuthService {
         return issueTokens(member);
     }
 
+    @Transactional
     public TokenResponse login(LoginRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail())
-                .filter(m -> "N".equals(m.getDelYn()))
-                .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_CREDENTIALS));
+        log.debug("Login attempt for email: {}", request.getEmail());
+        try {
+            Member member = memberRepository.findByEmail(request.getEmail())
+                    .filter(m -> "N".equals(m.getDelYn()))
+                    .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_CREDENTIALS));
 
-        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
-            throw new AuthException(AuthErrorCode.INVALID_CREDENTIALS);
+            if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+                throw new AuthException(AuthErrorCode.INVALID_CREDENTIALS);
+            }
+
+            return issueTokens(member);
+        } catch (AuthException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Login failed", e);
+            throw e;
         }
-
-        return issueTokens(member);
     }
 
     public TokenResponse refresh(String refreshToken) {
