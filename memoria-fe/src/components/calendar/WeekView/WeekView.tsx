@@ -15,9 +15,11 @@ import {
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useCalendarStore } from '@/store/calendarStore';
+import { useAuthStore } from '@/store/authStore';
 import { CalendarEvent } from '@/types/calendar';
 import EventModal from '@/components/calendar/EventModal/EventModal';
 import EventDetailModal from '@/components/calendar/EventDetailModal/EventDetailModal';
+import AuthPromptModal from '@/components/calendar/AuthPromptModal/AuthPromptModal';
 import styles from './WeekView.module.css';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
@@ -35,6 +37,8 @@ export default function WeekView() {
   const [modalHour, setModalHour] = useState<number>(9);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const weekDays = useMemo(() => {
     const start = startOfWeek(currentDate, { weekStartsOn: 0 });
@@ -108,6 +112,10 @@ export default function WeekView() {
   const nowLineTop = (nowMinutes / 60) * SLOT_HEIGHT;
 
   const handleSlotClick = (day: Date, hour: number) => {
+    if (!isAuthenticated) {
+      setShowAuthPrompt(true);
+      return;
+    }
     setModalDate(day);
     setModalHour(hour);
     setShowEventModal(true);
@@ -249,6 +257,10 @@ export default function WeekView() {
           initialDate={modalDate ?? undefined}
           initialHour={modalHour}
         />
+      )}
+
+      {showAuthPrompt && (
+        <AuthPromptModal onClose={() => setShowAuthPrompt(false)} />
       )}
 
       {showDetailModal && selectedEvent && (

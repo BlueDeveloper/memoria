@@ -19,6 +19,7 @@ import { Plus, Settings, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useCalendarStore } from '@/store/calendarStore';
 import { useAuthStore } from '@/store/authStore';
 import CreateCalendarModal from '@/components/calendar/CreateCalendarModal/CreateCalendarModal';
+import AuthPromptModal from '@/components/calendar/AuthPromptModal/AuthPromptModal';
 import styles from './Sidebar.module.css';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -33,6 +34,8 @@ export default function Sidebar() {
 
   const [miniDate, setMiniDate] = useState(new Date());
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const miniDays = useMemo(() => {
     const monthStart = startOfMonth(miniDate);
@@ -80,7 +83,7 @@ export default function Sidebar() {
 
         <button
           className={styles.addButton}
-          onClick={() => setShowCreateModal(true)}
+          onClick={() => isAuthenticated ? setShowCreateModal(true) : setShowAuthPrompt(true)}
         >
           <Plus size={16} />
           새 캘린더
@@ -154,6 +157,11 @@ export default function Sidebar() {
       {/* 캘린더 생성 모달 */}
       {showCreateModal && (
         <CreateCalendarModal onClose={() => setShowCreateModal(false)} />
+      )}
+
+      {/* 인증 유도 모달 */}
+      {showAuthPrompt && (
+        <AuthPromptModal onClose={() => setShowAuthPrompt(false)} />
       )}
     </div>
   );

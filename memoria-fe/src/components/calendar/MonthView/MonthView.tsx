@@ -15,9 +15,11 @@ import {
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useCalendarStore } from '@/store/calendarStore';
+import { useAuthStore } from '@/store/authStore';
 import { CalendarEvent } from '@/types/calendar';
 import EventModal from '@/components/calendar/EventModal/EventModal';
 import EventDetailModal from '@/components/calendar/EventDetailModal/EventDetailModal';
+import AuthPromptModal from '@/components/calendar/AuthPromptModal/AuthPromptModal';
 import styles from './MonthView.module.css';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -29,11 +31,13 @@ export default function MonthView() {
   const visibleCalendarIds = useCalendarStore((s) => s.visibleCalendarIds);
   const calendars = useCalendarStore((s) => s.calendars);
   const setCurrentDate = useCalendarStore((s) => s.setCurrentDate);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const [showEventModal, setShowEventModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
   const days = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
@@ -64,6 +68,10 @@ export default function MonthView() {
 
   const handleDayClick = (day: Date) => {
     setCurrentDate(day);
+    if (!isAuthenticated) {
+      setShowAuthPrompt(true);
+      return;
+    }
     setSelectedDate(day);
     setShowEventModal(true);
   };
@@ -138,6 +146,10 @@ export default function MonthView() {
           onClose={() => setShowEventModal(false)}
           initialDate={selectedDate ?? undefined}
         />
+      )}
+
+      {showAuthPrompt && (
+        <AuthPromptModal onClose={() => setShowAuthPrompt(false)} />
       )}
 
       {showDetailModal && selectedEvent && (

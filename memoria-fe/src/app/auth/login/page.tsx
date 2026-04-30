@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/api';
 import type { ApiResponse } from '@/types/api';
 import type { TokenResponse, User } from '@/types/auth';
+import { KakaoIcon, GoogleIcon, AppleIcon } from '@/components/icons/SocialIcons';
 import styles from './page.module.css';
 
 const loginSchema = z.object({
@@ -114,7 +115,7 @@ export default function LoginPage() {
             fullWidth
             onClick={() => handleSocialLogin('kakao')}
           >
-            <span className={styles.socialIcon}>&#x1F7E1;</span>
+            <KakaoIcon size={18} />
             카카오로 시작하기
           </Button>
 
@@ -124,7 +125,7 @@ export default function LoginPage() {
             fullWidth
             onClick={() => handleSocialLogin('google')}
           >
-            <span className={styles.socialIcon}>G</span>
+            <GoogleIcon size={18} />
             Google로 시작하기
           </Button>
 
@@ -134,7 +135,7 @@ export default function LoginPage() {
             fullWidth
             onClick={() => handleSocialLogin('apple')}
           >
-            <span className={styles.socialIcon}>&#xF8FF;</span>
+            <AppleIcon size={18} />
             Apple로 시작하기
           </Button>
         </div>
