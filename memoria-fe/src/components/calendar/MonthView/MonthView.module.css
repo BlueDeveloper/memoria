@@ -1,0 +1,147 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.weekdayHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.weekdayCell {
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-light);
+}
+
+.weekdayCell.sunday {
+  color: var(--color-error);
+}
+
+.weekdayCell.saturday {
+  color: #3498db;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+}
+
+.cell {
+  min-height: 100px;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: background var(--transition);
+  overflow: hidden;
+}
+
+.cell:nth-child(7n) {
+  border-right: none;
+}
+
+.cell:hover {
+  background: rgba(200, 169, 110, 0.04);
+}
+
+.cellOther {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.cellOther .dayNumber {
+  color: var(--color-text-light);
+  opacity: 0.5;
+}
+
+.dayNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 2px;
+}
+
+.dayToday {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.dayNumber.sunday {
+  color: var(--color-error);
+}
+
+.dayNumber.saturday {
+  color: #3498db;
+}
+
+.dayToday.sunday,
+.dayToday.saturday {
+  color: #fff;
+}
+
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.eventBar {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: opacity var(--transition);
+  line-height: 1.6;
+}
+
+.eventBar:hover {
+  opacity: 0.85;
+}
+
+.moreEvents {
+  font-size: 11px;
+  color: var(--color-text-light);
+  padding: 1px 6px;
+  cursor: pointer;
+}
+
+.moreEvents:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .cell {
+    min-height: 60px;
+    padding: 2px 3px;
+  }
+
+  .dayNumber {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+
+  .eventBar {
+    font-size: 10px;
+    padding: 0 3px;
+  }
+}

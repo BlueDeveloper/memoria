@@ -1,0 +1,232 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 종일 이벤트 */
+.allDaySection {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  min-height: 32px;
+}
+
+.allDayLabel {
+  width: 56px;
+  min-width: 56px;
+  font-size: 11px;
+  color: var(--color-text-light);
+  padding: 6px 8px;
+  text-align: right;
+}
+
+.allDayGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+  gap: 0;
+}
+
+.allDayCell {
+  border-left: 1px solid var(--color-border);
+  padding: 2px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.allDayEvent {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 요일 헤더 */
+.dayHeader {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.dayHeaderCell {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.todayHeader {
+  background: rgba(200, 169, 110, 0.05);
+}
+
+.dayLabel {
+  font-size: 12px;
+  color: var(--color-text-light);
+  font-weight: 500;
+}
+
+.dayLabel.sunday {
+  color: var(--color-error);
+}
+
+.dayLabel.saturday {
+  color: #3498db;
+}
+
+.dayDate {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-text);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.dayDateToday {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 시간 그리드 */
+.gridWrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.grid {
+  display: flex;
+  position: relative;
+}
+
+.timeGutter {
+  width: 56px;
+  min-width: 56px;
+  position: relative;
+}
+
+.timeLabel {
+  position: absolute;
+  right: 8px;
+  font-size: 11px;
+  color: var(--color-text-light);
+  transform: translateY(-7px);
+  text-align: right;
+  width: 40px;
+}
+
+.dayColumn {
+  flex: 1;
+  position: relative;
+  border-left: 1px solid var(--color-border);
+}
+
+.todayColumn {
+  background: rgba(200, 169, 110, 0.03);
+}
+
+.slot {
+  position: absolute;
+  width: 100%;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.slot:hover {
+  background: rgba(200, 169, 110, 0.06);
+}
+
+/* 이벤트 블록 */
+.eventBlock {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  border-radius: 4px;
+  padding: 4px 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 2;
+  transition: opacity var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.eventBlock:hover {
+  opacity: 0.85;
+}
+
+.eventTime {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.eventTitle {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 현재 시간선 */
+.nowLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-top: 2px solid var(--color-error);
+}
+
+.nowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-error);
+  position: absolute;
+  top: -5px;
+  left: -4px;
+}
+
+@media (max-width: 768px) {
+  .timeGutter {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  .timeLabel {
+    font-size: 10px;
+    width: 32px;
+  }
+
+  .dayDate {
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .eventBlock {
+    padding: 2px 4px;
+    font-size: 11px;
+  }
+}

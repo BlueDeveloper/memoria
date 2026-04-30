@@ -1,0 +1,175 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  min-height: 56px;
+  gap: 16px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menuButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--color-text);
+  transition: background var(--transition);
+}
+
+.menuButton:hover {
+  background: rgba(27, 42, 74, 0.06);
+}
+
+.todayButton {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  transition: all var(--transition);
+}
+
+.todayButton:hover {
+  background: rgba(27, 42, 74, 0.04);
+}
+
+.navGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: var(--color-text-light);
+  transition: background var(--transition);
+}
+
+.navButton:hover {
+  background: rgba(27, 42, 74, 0.06);
+}
+
+.currentPeriod {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewToggle {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.viewButton {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-light);
+  background: var(--color-bg-card);
+  transition: all var(--transition);
+  border-right: 1px solid var(--color-border);
+}
+
+.viewButton:last-child {
+  border-right: none;
+}
+
+.viewButton:hover {
+  background: rgba(27, 42, 74, 0.04);
+}
+
+.viewButtonActive {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.viewButtonActive:hover {
+  background: var(--color-primary);
+}
+
+.iconButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--color-text-light);
+  transition: background var(--transition);
+  position: relative;
+}
+
+.iconButton:hover {
+  background: rgba(27, 42, 74, 0.06);
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-error);
+}
+
+.profileAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+.profileAvatar:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 8px 16px;
+  }
+
+  .currentPeriod {
+    font-size: 15px;
+  }
+
+  .viewToggle {
+    display: none;
+  }
+}

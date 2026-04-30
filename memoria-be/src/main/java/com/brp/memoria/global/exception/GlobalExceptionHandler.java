@@ -1,6 +1,8 @@
 package com.brp.memoria.global.exception;
 
 import com.brp.memoria.domain.auth.exception.AuthException;
+import com.brp.memoria.domain.calendar.exception.CalendarException;
+import com.brp.memoria.domain.event.exception.EventException;
 import com.brp.memoria.global.common.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getAuthErrorCode().getHttpStatus())
                 .body(ApiResponse.fail(e.getAuthErrorCode().name(), e.getMessage()));
+    }
+
+    @ExceptionHandler(CalendarException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleCalendarException(CalendarException e) {
+        log.error("CalendarException: {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getCalendarErrorCode().getHttpStatus())
+                .body(ApiResponse.fail(e.getCalendarErrorCode().name(), e.getMessage()));
+    }
+
+    @ExceptionHandler(EventException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleEventException(EventException e) {
+        log.error("EventException: {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getEventErrorCode().getHttpStatus())
+                .body(ApiResponse.fail(e.getEventErrorCode().name(), e.getMessage()));
     }
 
     @ExceptionHandler(BusinessException.class)
