@@ -78,6 +78,15 @@ public class Member extends BaseEntity {
         this.delYn = "Y";
     }
 
+    public static Member createEmailMember(String email, String encodedPassword, String nickname) {
+        return Member.builder()
+                .email(email)
+                .password(encodedPassword)
+                .nickname(nickname)
+                .role(Role.USER)
+                .build();
+    }
+
     public enum Provider {
         KAKAO, GOOGLE, APPLE
     }

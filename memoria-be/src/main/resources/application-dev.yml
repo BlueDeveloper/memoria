@@ -53,9 +53,9 @@ spring:
             scope: profile, email
 
 jwt:
-  secret: "${JWT_SECRET:devSecretKeyForLocalDevelopmentOnlyDoNotUseInProduction2024}"
-  access-token-expiration: 1800000
-  refresh-token-expiration: 604800000
+  secret: "${JWT_SECRET:bWVtb3JpYS1kZXYtc2VjcmV0LWtleS1tdXN0LWJlLWF0LWxlYXN0LTI1Ni1iaXRzLWxvbmctZm9yLWhzMjU2LWFsZ29yaXRobQ==}"
+  access-token-expiration: 3600000
+  refresh-token-expiration: 2592000000
 
 cors:
   allowed-origins: "http://localhost:3000"

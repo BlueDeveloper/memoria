@@ -1,5 +1,6 @@
 package com.brp.memoria.global.exception;
 
+import com.brp.memoria.domain.auth.exception.AuthException;
 import com.brp.memoria.global.common.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AuthException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleAuthException(AuthException e) {
+        log.error("AuthException: {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getAuthErrorCode().getHttpStatus())
+                .body(ApiResponse.fail(e.getAuthErrorCode().name(), e.getMessage()));
+    }
 
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e) {
