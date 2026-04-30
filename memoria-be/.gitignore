@@ -1,0 +1,11 @@
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+*.class
+*.jar
+*.war
+.idea/
+*.iml
+out/
+src/main/generated/
+application-local.yml

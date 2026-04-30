@@ -1,0 +1,67 @@
+spring:
+  datasource:
+    url: "${DB_URL:jdbc:oracle:thin:@localhost:1521/xe}"
+    username: "${DB_USERNAME:memoria}"
+    password: "${DB_PASSWORD:memoria}"
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.OracleDialect
+    open-in-view: false
+
+  data:
+    redis:
+      host: "${REDIS_HOST:localhost}"
+      port: "${REDIS_PORT:6379}"
+      password: "${REDIS_PASSWORD:}"
+
+  mail:
+    host: "${MAIL_HOST:smtp.gmail.com}"
+    port: "${MAIL_PORT:587}"
+    username: "${MAIL_USERNAME:}"
+    password: "${MAIL_PASSWORD:}"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: "${KAKAO_CLIENT_ID:}"
+            client-secret: "${KAKAO_CLIENT_SECRET:}"
+            redirect-uri: "${KAKAO_REDIRECT_URI:http://localhost:3000/api/auth/callback/kakao}"
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, account_email
+          google:
+            client-id: "${GOOGLE_CLIENT_ID:}"
+            client-secret: "${GOOGLE_CLIENT_SECRET:}"
+            redirect-uri: "${GOOGLE_REDIRECT_URI:http://localhost:3000/api/auth/callback/google}"
+            scope: profile, email
+
+jwt:
+  secret: "${JWT_SECRET:devSecretKeyForLocalDevelopmentOnlyDoNotUseInProduction2024}"
+  access-token-expiration: 1800000
+  refresh-token-expiration: 604800000
+
+cors:
+  allowed-origins: "http://localhost:3000"
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.brp.memoria: INFO

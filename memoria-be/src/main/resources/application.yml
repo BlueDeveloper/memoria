@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: dev
+
+  application:
+    name: memoria
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs

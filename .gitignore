@@ -1,0 +1,38 @@
+# Node
+node_modules/
+.next/
+out/
+
+# Java
+*.class
+*.jar
+*.war
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+src/main/generated/
+out/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.production
+application-local.yml
+
+# Logs
+*.log
+logs/
+
+# Package
+package-lock.json

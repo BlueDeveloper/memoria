@@ -1,0 +1,97 @@
+# CLAUDE.md — Memoria 프로젝트 가이드
+
+## 글로벌 인프라 참조 🌐
+
+📖 **[글로벌 인프라 참조 가이드](C:\Users\bluee.claude\INFRASTRUCTURE_GLOBAL_REFERENCE.md)**
+📖 **[전역 개발 전략](C:\Users\bluee.claude\CLAUDE.md)**
+
+***
+
+## 프로젝트 개요
+
+* **이름**: Memoria (메모리아)
+
+* **컨셉**: 일정공유 웹/앱 서비스 (타임트리 벤치마킹)
+
+* **타겟**: 커플, 가족, 소규모 팀 등 일정을 함께 관리하는 그룹
+
+* **수익 모델**: 추후 결정 (프리미엄 구독 / 광고 등)
+
+* **브랜드**: BRP (Blue Red Polarity)
+
+## 기술 스택
+
+### Phase 1 — 웹
+
+| 항목        | 기술                                                                            |
+| --------- | ----------------------------------------------------------------------------- |
+| **FE**    | Next.js (App Router) + TypeScript + CSS Modules                               |
+| **BE**    | Spring Boot 3.x + Java 17 + DDD                                               |
+| **DB**    | Oracle (OCI Autonomous DB)                                                    |
+| **Cache** | Redis                                                                         |
+| **인증**    | JWT (Access 1h + Refresh 30d, Silent Refresh) + OAuth2 (Kakao, Google, Apple) |
+| **FE 배포** | Cloudflare Pages                                                              |
+| **BE 배포** | OCI Compute + Jenkins + systemctl                                             |
+
+### Phase 2 — 모바일 앱 (추후)
+
+| 항목            | 기술                           |
+| ------------- | ---------------------------- |
+| **FE**        | React Native (Expo)          |
+| **Android**   | GitHub Actions → Google Play |
+| **iOS**       | Codemagic → TestFlight       |
+| **Bundle ID** | brp.memoria.app              |
+
+## 배포 정보
+
+| 항목        | 값                               |
+| --------- | ------------------------------- |
+| **레포**    | BlueDeveloper/memoria (생성 예정)   |
+| **FE 배포** | Cloudflare Pages (main push 자동) |
+| **BE 배포** | OCI (152.69.235.170) Jenkins    |
+| **도메인**   | 미정                              |
+
+## 벤치마킹 대상
+
+* **타임트리 (TimeTree)**: <https://timetreeapp.com>
+
+  * 캘린더 공유, 이벤트 생성, 메모, 알림
+
+  * 초대 링크로 그룹 참여
+
+  * 일/주/월 뷰 전환
+
+## 프로젝트 구조
+
+```
+Memoria/
+├── memoria-fe/        # Next.js 15 프론트엔드
+├── memoria-be/        # Spring Boot 3.4 백엔드
+├── docs/
+│   ├── sql/           # DDL (create.sql, delete.sql)
+│   ├── planning/      # 기획 문서
+│   ├── assets/        # 로고, 파비콘
+│   └── work-log/      # 작업 로그
+├── scripts/           # 유틸리티 스크립트
+└── CLAUDE.md
+```
+
+## 작업 규칙
+
+* 작업이 완료되면 반드시 변경사항을 커밋하고 원격 저장소에 푸시한다.
+
+* 커밋 메시지는 한글로 작성한다.
+
+* 작업 내역은 docs/work-log/ 에 기록한다.
+
+* 로컬 빌드 성공 확인 후 배포한다.
+
+## 다음 작업
+
+1. ~~기획 — 핵심 기능 정의~~ ✅ (docs/planning/01-feature-definition.md)
+2. ~~타임트리 벤치마킹~~ ✅ (docs/work-log/2026-04-30-timetree-benchmarking.md)
+3. ~~기술 스택 확정~~ ✅ (docs/planning/01-feature-definition.md)
+4. ~~프로젝트 초기 세팅~~ ✅ (memoria-fe + memoria-be)
+5. 화면 설계 (와이어프레임)
+6. 도메인 엔티티 구현
+
