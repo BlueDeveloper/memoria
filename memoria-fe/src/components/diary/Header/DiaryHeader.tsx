@@ -2,9 +2,11 @@
 
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, Bell, Menu } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight, Bell, Menu, LogIn } from 'lucide-react';
 import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
+import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
 import styles from './DiaryHeader.module.css';
 
 export default function DiaryHeader() {
@@ -16,6 +18,8 @@ export default function DiaryHeader() {
   const navigateWeek = useDiaryStore((s) => s.navigateWeek);
   const toggleSidebar = useDiaryStore((s) => s.toggleSidebar);
   const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
   const handlePrev = () => {
     if (viewMode === 'month') {
@@ -85,12 +89,28 @@ export default function DiaryHeader() {
             주간
           </button>
         </div>
-        <button className={styles.iconButton}>
-          <Bell size={18} />
-          <span className={styles.badge} />
-        </button>
-        <div className={styles.profileAvatar}>{nickname.charAt(0)}</div>
+        {isAuthenticated ? (
+          <>
+            <button className={styles.iconButton}>
+              <Bell size={18} />
+              <span className={styles.badge} />
+            </button>
+            <div className={styles.profileAvatar}>{nickname.charAt(0)}</div>
+          </>
+        ) : (
+          <button
+            className={styles.loginButton}
+            onClick={() => setShowAuthPrompt(true)}
+          >
+            <LogIn size={16} />
+            로그인
+          </button>
+        )}
       </div>
+
+      {showAuthPrompt && (
+        <AuthPromptModal onClose={() => setShowAuthPrompt(false)} />
+      )}
     </header>
   );
 }
