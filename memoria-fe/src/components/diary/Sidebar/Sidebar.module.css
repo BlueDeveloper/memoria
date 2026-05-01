@@ -232,3 +232,23 @@
 .settingsButton:hover {
   background: rgba(27, 42, 74, 0.06);
 }
+
+/* 비로그인 프로필 */
+.loginProfile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  margin-top: 12px;
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-accent);
+  cursor: pointer;
+  border-radius: var(--radius-input);
+  transition: background var(--transition);
+}
+
+.loginProfile:hover {
+  background: rgba(200, 169, 110, 0.08);
+}

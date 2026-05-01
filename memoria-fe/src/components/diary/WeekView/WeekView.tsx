@@ -154,32 +154,31 @@ export default function WeekView() {
         </div>
       </div>
 
-      {/* 헤더: 요일 + 날짜 */}
-      <div className={styles.dayHeader}>
-        <div className={styles.timeGutter} />
-        {weekDays.map((day) => {
-          const today = isToday(day);
-          const dayOfWeek = day.getDay();
-          return (
-            <div
-              key={day.toISOString()}
-              className={`${styles.dayHeaderCell} ${today ? styles.todayHeader : ''}`}
-            >
-              <span
-                className={`${styles.dayLabel} ${dayOfWeek === 0 ? styles.sunday : ''} ${dayOfWeek === 6 ? styles.saturday : ''}`}
-              >
-                {format(day, 'EEE', { locale: ko })}
-              </span>
-              <span className={`${styles.dayDate} ${today ? styles.dayDateToday : ''}`}>
-                {format(day, 'd')}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* 시간 그리드 */}
+      {/* 시간 그리드 (헤더 포함 — 스크롤바 정렬 통일) */}
       <div className={styles.gridWrapper} ref={gridRef}>
+        {/* 헤더: 요일 + 날짜 */}
+        <div className={styles.dayHeader}>
+          <div className={styles.timeGutter} />
+          {weekDays.map((day) => {
+            const today = isToday(day);
+            const dayOfWeek = day.getDay();
+            return (
+              <div
+                key={day.toISOString()}
+                className={`${styles.dayHeaderCell} ${today ? styles.todayHeader : ''}`}
+              >
+                <span
+                  className={`${styles.dayLabel} ${dayOfWeek === 0 ? styles.sunday : ''} ${dayOfWeek === 6 ? styles.saturday : ''}`}
+                >
+                  {format(day, 'EEE', { locale: ko })}
+                </span>
+                <span className={`${styles.dayDate} ${today ? styles.dayDateToday : ''}`}>
+                  {format(day, 'd')}
+                </span>
+              </div>
+            );
+          })}
+        </div>
         <div className={styles.grid} style={{ height: 24 * SLOT_HEIGHT }}>
           {/* 시간축 */}
           <div className={styles.timeGutter}>

@@ -16,9 +16,10 @@ import {
   subMonths,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Settings, ChevronLeft, ChevronRight, Check, ArrowLeft } from 'lucide-react';
+import { Settings, ChevronLeft, ChevronRight, Check, ArrowLeft, LogIn } from 'lucide-react';
 import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
+import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
 import styles from './Sidebar.module.css';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -34,6 +35,8 @@ export default function Sidebar() {
   const user = useAuthStore((s) => s.user);
 
   const [miniDate, setMiniDate] = useState(new Date());
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const currentDiary = diaries.find((d) => d.diaryId === selectedDiaryId);
 
@@ -50,6 +53,10 @@ export default function Sidebar() {
   };
 
   const handleBackToIntro = () => {
+    if (!isAuthenticated) {
+      setShowAuthPrompt(true);
+      return;
+    }
     router.push('/');
   };
 
@@ -139,13 +146,27 @@ export default function Sidebar() {
       </div>
 
       {/* 프로필 */}
-      <div className={styles.profile}>
-        <div className={styles.avatar}>{nickname.charAt(0)}</div>
-        <span className={styles.profileName}>{nickname}</span>
-        <button className={styles.settingsButton}>
-          <Settings size={16} />
+      {isAuthenticated ? (
+        <div className={styles.profile}>
+          <div className={styles.avatar}>{nickname.charAt(0)}</div>
+          <span className={styles.profileName}>{nickname}</span>
+          <button className={styles.settingsButton}>
+            <Settings size={16} />
+          </button>
+        </div>
+      ) : (
+        <button
+          className={styles.loginProfile}
+          onClick={() => setShowAuthPrompt(true)}
+        >
+          <LogIn size={16} />
+          <span>로그인 / 회원가입</span>
         </button>
-      </div>
+      )}
+
+      {showAuthPrompt && (
+        <AuthPromptModal onClose={() => setShowAuthPrompt(false)} />
+      )}
     </div>
   );
 }
