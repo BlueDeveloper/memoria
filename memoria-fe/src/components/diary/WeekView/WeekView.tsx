@@ -128,38 +128,14 @@ export default function WeekView() {
 
   return (
     <div className={styles.container}>
-      {/* 고정 헤더: 종일 + 요일/날짜 */}
+      {/* 고정 헤더: 요일/날짜 + 종일 이벤트 */}
       <div className={styles.fixedHeader}>
-        {/* 종일 행 */}
-        <div className={styles.headerRow}>
-          <div className={styles.gutterCell}>종일</div>
-          {weekDays.map((day) => {
-            const dayAllDay = getAllDayEventsForDay(day);
-            return (
-              <div
-                key={`allday-${day.toISOString()}`}
-                className={`${styles.allDayCell} ${isToday(day) ? styles.todayColumn : ''}`}
-              >
-                {dayAllDay.map((event) => (
-                  <div
-                    key={event.eventId}
-                    className={styles.allDayEvent}
-                    style={{ backgroundColor: getEventColor(event) }}
-                  >
-                    {event.title}
-                  </div>
-                ))}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 요일/날짜 행 */}
         <div className={styles.headerRow}>
           <div className={styles.gutterCell} />
           {weekDays.map((day) => {
             const today = isToday(day);
             const dayOfWeek = day.getDay();
+            const dayAllDay = getAllDayEventsForDay(day);
             return (
               <div
                 key={`header-${day.toISOString()}`}
@@ -173,6 +149,19 @@ export default function WeekView() {
                 <span className={`${styles.dayDate} ${today ? styles.dayDateToday : ''}`}>
                   {format(day, 'd')}
                 </span>
+                {dayAllDay.length > 0 && (
+                  <div className={styles.allDayEvents}>
+                    {dayAllDay.map((event) => (
+                      <div
+                        key={event.eventId}
+                        className={styles.allDayEvent}
+                        style={{ backgroundColor: getEventColor(event) }}
+                      >
+                        {event.title}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}

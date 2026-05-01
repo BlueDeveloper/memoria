@@ -29,26 +29,6 @@
   padding: 6px 8px 6px 0;
 }
 
-/* 종일 이벤트 */
-.allDayCell {
-  border-left: 1px solid var(--color-border);
-  padding: 2px 4px;
-  min-height: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.allDayEvent {
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-size: 11px;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* 요일 헤더 셀 */
 .dayHeaderCell {
   text-align: center;
@@ -94,6 +74,25 @@
   background: var(--color-accent);
   color: #fff;
   font-weight: 600;
+}
+
+/* 종일 이벤트 (헤더 셀 내부) */
+.allDayEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+  padding: 2px 4px 0;
+}
+
+.allDayEvent {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 스크롤 영역 — 스크롤바 숨기고 스크롤 유지 (헤더 정렬 깨짐 방지) */

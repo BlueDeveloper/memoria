@@ -46,24 +46,24 @@
 
 ## 배포 정보
 
-| 항목 | 값 |
-|------|------|
-| **레포** | BlueDeveloper/memoria |
-| **FE 배포** | Cloudflare Pages (main push 자동) |
-| **BE 배포** | OCI (152.69.235.170:8084) systemctl |
-| **BE 서비스** | memoria-be.service (systemd) |
-| **DB 스키마** | MEMORIA (dev/prod 공유) |
-| **도메인** | 미정 |
+| 항목         | 값                                   |
+| ---------- | ----------------------------------- |
+| **레포**     | BlueDeveloper/memoria               |
+| **FE 배포**  | Cloudflare Pages (main push 자동)     |
+| **BE 배포**  | OCI (152.69.235.170:8084) systemctl |
+| **BE 서비스** | memoria-be.service (systemd)        |
+| **DB 스키마** | MEMORIA (dev/prod 공유)               |
+| **도메인**    | 미정                                  |
 
 ### 환경 분리
 
-| 항목 | 개발 (dev) | 운영 (prod) |
-|------|-----------|------------|
-| FE URL | localhost:3000 | memoria.pages.dev |
-| BE URL | localhost:8080 | 152.69.235.170:8084 |
-| DB | MEMORIA@BlueAutoDB (공유) | MEMORIA@BlueAutoDB (공유) |
-| Redis | localhost:6379 | localhost:6379 (서버 내) |
-| BE 배포 | 로컬 gradlew bootRun | scripts/deploy-be.sh |
+| 항목     | 개발 (dev)                 | 운영 (prod)                |
+| ------ | ------------------------ | ------------------------ |
+| FE URL | localhost:3000           | memoria.pages.dev        |
+| BE URL | localhost:8080           | 152.69.235.170:8084      |
+| DB     | MEMORIA\@BlueAutoDB (공유) | MEMORIA\@BlueAutoDB (공유) |
+| Redis  | localhost:6379           | localhost:6379 (서버 내)    |
+| BE 배포  | 로컬 gradlew bootRun       | scripts/deploy-be.sh     |
 
 ## 벤치마킹 대상
 
