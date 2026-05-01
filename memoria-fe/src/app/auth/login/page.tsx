@@ -58,8 +58,14 @@ export default function LoginPage() {
   };
 
   const handleSocialLogin = (provider: 'kakao' | 'google' | 'apple') => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-    window.location.href = `${baseUrl}/oauth2/authorization/${provider}`;
+    const feOrigin = window.location.origin;
+    const redirectUri = `${feOrigin}/auth/callback/${provider}`;
+
+    if (provider === 'kakao') {
+      const kakaoClientId = '916c4662c0d22467bbb876cf8a77521a';
+      window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`;
+    }
+    // TODO: google, apple
   };
 
   return (

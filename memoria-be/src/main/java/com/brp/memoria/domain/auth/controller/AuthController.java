@@ -1,10 +1,12 @@
 package com.brp.memoria.domain.auth.controller;
 
-import com.brp.memoria.domain.auth.dto.LoginRequest;
-import com.brp.memoria.domain.auth.dto.SignUpRequest;
-import com.brp.memoria.domain.auth.dto.TokenResponse;
+import com.brp.memoria.domain.auth.dto.*;
 import com.brp.memoria.domain.auth.service.AuthService;
+import com.brp.memoria.domain.auth.service.KakaoOAuthService;
+import com.brp.memoria.domain.member.entity.Member;
+import com.brp.memoria.domain.member.repository.MemberRepository;
 import com.brp.memoria.global.common.ApiResponse;
+import com.brp.memoria.global.security.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +23,8 @@ public class AuthController {
     private static final int REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60; // 30일 (초)
 
     private final AuthService authService;
+    private final KakaoOAuthService kakaoOAuthService;
+    private final MemberRepository memberRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<TokenResponse>> signUp(@Valid @RequestBody SignUpRequest request) {
@@ -56,6 +60,22 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie().toString())
                 .body(ApiResponse.ok());
+    }
+
+    @PostMapping("/oauth/kakao")
+    public ResponseEntity<ApiResponse<TokenResponse>> kakaoCallback(@Valid @RequestBody OAuthCallbackRequest request) {
+        TokenResponse tokenResponse = kakaoOAuthService.processKakaoLogin(request.getCode(), request.getRedirectUri());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, createRefreshTokenCookie(tokenResponse.getRefreshToken()).toString())
+                .body(ApiResponse.ok(tokenResponse));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<MemberResponse>> getMe() {
+        Long memberId = SecurityUtil.getCurrentMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+        return ResponseEntity.ok(ApiResponse.ok(MemberResponse.from(member)));
     }
 
     private ResponseCookie createRefreshTokenCookie(String refreshToken) {

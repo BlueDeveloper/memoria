@@ -9,10 +9,11 @@
   padding: 0 8px 20px;
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 16px;
+  text-align: center;
 }
 
 .logoImage {
-  height: 28px;
+  height: 112px;
   width: auto;
   object-fit: contain;
 }
