@@ -16,9 +16,10 @@ import {
   subMonths,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Settings, ChevronLeft, ChevronRight, Check, ArrowLeft, LogIn } from 'lucide-react';
+import { Settings, ChevronLeft, ChevronRight, Check, ArrowLeft, LogIn, LogOut } from 'lucide-react';
 import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
+import api from '@/lib/api';
 import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
 import styles from './Sidebar.module.css';
 
@@ -37,6 +38,7 @@ export default function Sidebar() {
   const [miniDate, setMiniDate] = useState(new Date());
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const clearUser = useAuthStore((s) => s.clearUser);
 
   const currentDiary = diaries.find((d) => d.diaryId === selectedDiaryId);
 
@@ -152,8 +154,16 @@ export default function Sidebar() {
         <div className={styles.profile}>
           <div className={styles.avatar}>{nickname.charAt(0)}</div>
           <span className={styles.profileName}>{nickname}</span>
-          <button className={styles.settingsButton}>
-            <Settings size={16} />
+          <button
+            className={styles.settingsButton}
+            onClick={async () => {
+              try { await api.post('/api/auth/logout'); } catch {}
+              clearUser();
+              router.push('/');
+            }}
+            title="로그아웃"
+          >
+            <LogOut size={16} />
           </button>
         </div>
       ) : (

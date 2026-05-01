@@ -36,8 +36,10 @@ function KakaoCallbackHandler() {
         setUser(userRes.data);
 
         router.replace('/');
-      } catch {
-        router.replace('/auth/login');
+      } catch (err) {
+        console.error('카카오 로그인 실패:', err);
+        alert('로그인에 실패했습니다. 다시 시도해주세요.');
+        router.replace('/');
       }
     };
 

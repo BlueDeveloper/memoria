@@ -22,7 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.TrustManagerFactory;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.net.HttpURLConnection;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +47,9 @@ public class KakaoOAuthService {
 
     @Value("${kakao.client-id:916c4662c0d22467bbb876cf8a77521a}")
     private String kakaoClientId;
+
+    @Value("${kakao.client-secret:}")
+    private String kakaoClientSecret;
 
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
@@ -63,7 +75,7 @@ public class KakaoOAuthService {
     }
 
     private String getKakaoAccessToken(String code, String redirectUri) {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = createKakaoRestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -73,21 +85,30 @@ public class KakaoOAuthService {
         params.add("client_id", kakaoClientId);
         params.add("redirect_uri", redirectUri);
         params.add("code", code);
+        if (kakaoClientSecret != null && !kakaoClientSecret.isEmpty()) {
+            params.add("client_secret", kakaoClientSecret);
+        }
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         try {
+            log.info("Kakao token request: client_id={}, redirect_uri={}, code_length={}, has_secret={}",
+                    kakaoClientId, redirectUri, code.length(), kakaoClientSecret != null && !kakaoClientSecret.isEmpty());
             ResponseEntity<String> response = restTemplate.postForEntity(KAKAO_TOKEN_URL, request, String.class);
+            log.info("Kakao token response: {}", response.getBody());
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
             return jsonNode.get("access_token").asText();
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            log.error("Kakao token error: status={}, body={}, headers={}", e.getStatusCode(), e.getResponseBodyAsString(), e.getResponseHeaders());
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN);
         } catch (Exception e) {
-            log.error("Failed to get Kakao access token", e);
+            log.error("Failed to get Kakao access token: {}", e.getMessage(), e);
             throw new AuthException(AuthErrorCode.INVALID_TOKEN);
         }
     }
 
     private KakaoUserInfo getKakaoUserInfo(String accessToken) {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = createKakaoRestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
@@ -188,6 +209,45 @@ public class KakaoOAuthService {
         );
 
         return TokenResponse.of(accessToken, refreshToken);
+    }
+
+    /**
+     * Oracle Wallet SSL 설정이 JVM 전역으로 잡혀 있어서,
+     * 카카오 API 호출 시 기본 SSL 컨텍스트를 사용하는 RestTemplate 생성
+     */
+    private RestTemplate createKakaoRestTemplate() {
+        try {
+            // Java 기본 cacerts 파일을 직접 로드 (Oracle Wallet trustStore 우회)
+            String javaHome = System.getProperty("java.home");
+            java.io.File cacerts = new java.io.File(javaHome, "lib/security/cacerts");
+
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            try (java.io.FileInputStream fis = new java.io.FileInputStream(cacerts)) {
+                trustStore.load(fis, "changeit".toCharArray());
+            }
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(trustStore);
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, tmf.getTrustManagers(), null);
+
+            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory() {
+                @Override
+                protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
+                    if (connection instanceof HttpsURLConnection httpsConn) {
+                        httpsConn.setSSLSocketFactory(sslContext.getSocketFactory());
+                    }
+                    super.prepareConnection(connection, httpMethod);
+                }
+            };
+            factory.setConnectTimeout(5000);
+            factory.setReadTimeout(5000);
+            return new RestTemplate(factory);
+        } catch (Exception e) {
+            log.error("Failed to create custom SSL RestTemplate", e);
+            return new RestTemplate();
+        }
     }
 
     private record KakaoUserInfo(long id, String email, String nickname, String profileImage) {}

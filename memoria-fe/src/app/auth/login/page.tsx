@@ -1,62 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import Button from '@/components/common/Button/Button';
-import Input from '@/components/common/Input/Input';
-import { useAuthStore } from '@/store/authStore';
-import api from '@/lib/api';
-import type { ApiResponse } from '@/types/api';
-import type { TokenResponse, User } from '@/types/auth';
 import { KakaoIcon, GoogleIcon, AppleIcon } from '@/components/icons/SocialIcons';
 import styles from './page.module.css';
 
-const loginSchema = z.object({
-  email: z.string().min(1, '이메일을 입력해 주세요').email('올바른 이메일 형식을 입력해 주세요'),
-  password: z.string().min(1, '비밀번호를 입력해 주세요'),
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
-
 export default function LoginPage() {
-  const router = useRouter();
-  const { setUser, setAccessToken } = useAuthStore();
-  const [serverError, setServerError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  const onSubmit = async (formData: LoginForm) => {
-    setServerError('');
-    setIsLoading(true);
-    try {
-      const { data: tokenRes } = await api.post<ApiResponse<TokenResponse>>(
-        '/api/auth/login',
-        formData
-      );
-      setAccessToken(tokenRes.data.accessToken);
-
-      const { data: userRes } = await api.get<ApiResponse<User>>('/api/auth/me');
-      setUser(userRes.data);
-
-      router.push('/');
-    } catch {
-      setServerError('이메일 또는 비밀번호가 올바르지 않습니다.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleSocialLogin = (provider: 'kakao' | 'google' | 'apple') => {
     const feOrigin = window.location.origin;
     const redirectUri = `${feOrigin}/auth/callback/${provider}`;
@@ -73,45 +21,7 @@ export default function LoginPage() {
       <div className={styles.card}>
         <div className={styles.logoSection}>
           <img src="/logo.png" alt="Memoria" className={styles.logoImage} />
-          <p className={styles.subtitle}>함께 만드는 우리의 시간</p>
-        </div>
-
-        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-          {serverError && (
-            <div className={styles.serverError}>{serverError}</div>
-          )}
-
-          <Input
-            label="이메일"
-            type="email"
-            placeholder="이메일 주소"
-            error={errors.email?.message}
-            registration={register('email')}
-          />
-
-          <Input
-            label="비밀번호"
-            type="password"
-            placeholder="비밀번호"
-            error={errors.password?.message}
-            registration={register('password')}
-          />
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            fullWidth
-            loading={isLoading}
-          >
-            로그인
-          </Button>
-        </form>
-
-        <div className={styles.divider}>
-          <span className={styles.dividerLine} />
-          <span className={styles.dividerText}>또는</span>
-          <span className={styles.dividerLine} />
+          <p className={styles.subtitle}>나만의 다이어리를 만들고, 꾸미고, 공유하세요</p>
         </div>
 
         <div className={styles.socialButtons}>
@@ -147,10 +57,7 @@ export default function LoginPage() {
         </div>
 
         <div className={styles.footer}>
-          계정이 없으신가요?
-          <Link href="/auth/register" className={styles.footerLink}>
-            회원가입
-          </Link>
+          간편하게 소셜 계정으로 시작하세요
         </div>
       </div>
     </div>
