@@ -16,11 +16,12 @@ import {
   subMonths,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Settings, ChevronLeft, ChevronRight, Check, ArrowLeft, LogIn, LogOut } from 'lucide-react';
+import { Settings, ChevronLeft, ChevronRight, Check, Plus, LogIn, LogOut } from 'lucide-react';
 import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/api';
 import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
+import CreateDiaryModal from '@/components/diary/CreateDiaryModal/CreateDiaryModal';
 import styles from './Sidebar.module.css';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -37,6 +38,7 @@ export default function Sidebar() {
 
   const [miniDate, setMiniDate] = useState(new Date());
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [showCreateDiary, setShowCreateDiary] = useState(false);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const clearUser = useAuthStore((s) => s.clearUser);
 
@@ -88,11 +90,25 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* 다른 다이어리로 이동 — 다이어리 2개 이상일 때만 표시 */}
-      {diaries.length > 1 && (
-        <button className={styles.backButton} onClick={handleBackToIntro}>
-          <ArrowLeft size={16} />
-          다른 다이어리로 이동
+      {/* 다이어리 관리 */}
+      {isAuthenticated && (
+        <>
+          {diaries.length > 1 && (
+            <button className={styles.backButton} onClick={handleBackToIntro}>
+              <Plus size={16} />
+              다른 다이어리로 이동
+            </button>
+          )}
+          <button className={styles.backButton} onClick={() => setShowCreateDiary(true)}>
+            <Plus size={16} />
+            새 다이어리 만들기
+          </button>
+        </>
+      )}
+      {!isAuthenticated && (
+        <button className={styles.backButton} onClick={() => setShowAuthPrompt(true)}>
+          <Plus size={16} />
+          새 다이어리 만들기
         </button>
       )}
 
@@ -180,6 +196,9 @@ export default function Sidebar() {
 
       {showAuthPrompt && (
         <AuthPromptModal onClose={() => setShowAuthPrompt(false)} />
+      )}
+      {showCreateDiary && (
+        <CreateDiaryModal onClose={() => setShowCreateDiary(false)} />
       )}
     </div>
   );
