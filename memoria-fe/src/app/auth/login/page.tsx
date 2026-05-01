@@ -66,7 +66,7 @@ export default function LoginPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.logoSection}>
-          <h1 className={styles.logo}>Memoria</h1>
+          <img src="/logo.png" alt="Memoria" className={styles.logoImage} />
           <p className={styles.subtitle}>함께 만드는 우리의 시간</p>
         </div>
 

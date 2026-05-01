@@ -26,6 +26,12 @@
   letter-spacing: -0.5px;
 }
 
+.brandLogo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
 .dateInfo {
   display: flex;
   flex-direction: column;

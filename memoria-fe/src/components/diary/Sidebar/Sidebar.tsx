@@ -64,7 +64,9 @@ export default function Sidebar() {
 
   return (
     <div className={styles.sidebar}>
-      <div className={styles.logo}>Memoria</div>
+      <div className={styles.logo}>
+        <img src="/logo.png" alt="Memoria" className={styles.logoImage} />
+      </div>
 
       {/* 현재 다이어리 정보 */}
       {currentDiary && (

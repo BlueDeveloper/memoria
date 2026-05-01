@@ -74,7 +74,7 @@ export default function RegisterPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.logoSection}>
-          <h1 className={styles.logo}>Memoria</h1>
+          <img src="/logo.png" alt="Memoria" className={styles.logoImage} />
           <p className={styles.title}>회원가입</p>
         </div>
 

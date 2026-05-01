@@ -6,13 +6,15 @@
 }
 
 .logo {
-  font-family: var(--font-brand);
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--color-primary);
   padding: 0 8px 20px;
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 16px;
+}
+
+.logoImage {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
 }
 
 .section {

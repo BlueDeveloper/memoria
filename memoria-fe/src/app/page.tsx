@@ -113,7 +113,7 @@ export default function IntroPage() {
       {/* 상단 헤더 */}
       <header className={styles.header}>
         <div className={styles.brandArea}>
-          <h1 className={styles.brand}>Memoria</h1>
+          <img src="/logo.png" alt="Memoria" className={styles.brandLogo} />
           <div className={styles.dateInfo}>
             <span className={styles.todayDate}>{todayLabel}</span>
             <span className={styles.greeting}>{getGreeting()}</span>
