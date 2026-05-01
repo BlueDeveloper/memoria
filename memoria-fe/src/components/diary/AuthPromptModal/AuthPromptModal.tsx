@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { X, BookOpen } from 'lucide-react';
 import Button from '@/components/common/Button/Button';
 import { KakaoIcon, GoogleIcon, AppleIcon } from '@/components/icons/SocialIcons';
@@ -11,8 +10,6 @@ interface Props {
 }
 
 export default function AuthPromptModal({ onClose }: Props) {
-  const router = useRouter();
-
   const handleSocialLogin = (provider: 'kakao' | 'google' | 'apple') => {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     window.location.href = `${baseUrl}/oauth2/authorization/${provider}`;
@@ -67,26 +64,8 @@ export default function AuthPromptModal({ onClose }: Props) {
           </Button>
         </div>
 
-        <div className={styles.divider}>
-          <span className={styles.dividerLine} />
-          <span className={styles.dividerText}>또는</span>
-          <span className={styles.dividerLine} />
-        </div>
-
-        <Button
-          variant="primary"
-          size="lg"
-          fullWidth
-          onClick={() => router.push('/auth/register')}
-        >
-          이메일로 회원가입
-        </Button>
-
         <div className={styles.footer}>
-          이미 계정이 있으신가요?{' '}
-          <button className={styles.loginLink} onClick={() => router.push('/auth/login')}>
-            로그인
-          </button>
+          간편하게 소셜 계정으로 시작하세요
         </div>
       </div>
     </div>
