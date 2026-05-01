@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = 'memoria'
+        APP_DIR = '/opt/memoria-be'
+        SERVICE_NAME = 'memoria-be'
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-17.0.18.0.10-1.el9.aarch64'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('memoria-be') {
+                    sh '''
+                        chmod +x ./gradlew
+                        ./gradlew clean build -x test --no-daemon
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh """
+                    set -euo pipefail
+                    cp memoria-be/build/libs/memoria-0.0.1-SNAPSHOT.jar ${APP_DIR}/app.jar
+                    sudo -n /bin/systemctl restart ${SERVICE_NAME}
+                    sleep 10
+                    sudo -n /bin/systemctl status ${SERVICE_NAME}
+                """
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                sh '''
+                    for i in $(seq 1 10); do
+                        sleep 3
+                        STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8084/v3/api-docs)
+                        if [ "$STATUS" = "200" ]; then
+                            echo "Health check PASSED"
+                            exit 0
+                        fi
+                    done
+                    echo "Health check FAILED"
+                    exit 1
+                '''
+            }
+        }
+    }
+
+    post {
+        failure {
+            sh "sudo -n /bin/systemctl status ${SERVICE_NAME} || true"
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
