@@ -103,6 +103,11 @@ export default function IntroPage() {
   const todayLabel = format(new Date(), 'M월 d일 EEEE', { locale: ko });
   const nickname = user?.nickname ?? '사용자';
 
+  // 로딩 중이거나 다이어리 1개 이하면 인트로 렌더링하지 않음 (리다이렉트 처리)
+  if (!loaded || diaries.length <= 1) {
+    return null;
+  }
+
   return (
     <div className={styles.container}>
       {/* 상단 헤더 */}
