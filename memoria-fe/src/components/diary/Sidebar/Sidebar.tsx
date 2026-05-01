@@ -88,11 +88,13 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* 다른 다이어리로 이동 */}
-      <button className={styles.backButton} onClick={handleBackToIntro}>
-        <ArrowLeft size={16} />
-        다른 다이어리로 이동
-      </button>
+      {/* 다른 다이어리로 이동 — 다이어리 2개 이상일 때만 표시 */}
+      {diaries.length > 1 && (
+        <button className={styles.backButton} onClick={handleBackToIntro}>
+          <ArrowLeft size={16} />
+          다른 다이어리로 이동
+        </button>
+      )}
 
       {/* 미니 달력 */}
       <div className={styles.miniCalendar}>
