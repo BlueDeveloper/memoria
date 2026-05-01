@@ -128,15 +128,16 @@ export default function WeekView() {
 
   return (
     <div className={styles.container}>
-      {/* 종일 이벤트 영역 */}
-      <div className={styles.allDaySection}>
-        <div className={styles.allDayLabel}>종일</div>
-        <div className={styles.allDayGrid}>
+      {/* 고정 헤더: 종일 + 요일/날짜 */}
+      <div className={styles.fixedHeader}>
+        {/* 종일 행 */}
+        <div className={styles.headerRow}>
+          <div className={styles.gutterCell}>종일</div>
           {weekDays.map((day) => {
             const dayAllDay = getAllDayEventsForDay(day);
             return (
               <div
-                key={day.toISOString()}
+                key={`allday-${day.toISOString()}`}
                 className={`${styles.allDayCell} ${isToday(day) ? styles.todayColumn : ''}`}
               >
                 {dayAllDay.map((event) => (
@@ -152,19 +153,16 @@ export default function WeekView() {
             );
           })}
         </div>
-      </div>
 
-      {/* 시간 그리드 (헤더 포함 — 스크롤바 정렬 통일) */}
-      <div className={styles.gridWrapper} ref={gridRef}>
-        {/* 헤더: 요일 + 날짜 */}
-        <div className={styles.dayHeader}>
-          <div className={styles.timeGutter} />
+        {/* 요일/날짜 행 */}
+        <div className={styles.headerRow}>
+          <div className={styles.gutterCell} />
           {weekDays.map((day) => {
             const today = isToday(day);
             const dayOfWeek = day.getDay();
             return (
               <div
-                key={day.toISOString()}
+                key={`header-${day.toISOString()}`}
                 className={`${styles.dayHeaderCell} ${today ? styles.todayHeader : ''}`}
               >
                 <span
@@ -179,9 +177,12 @@ export default function WeekView() {
             );
           })}
         </div>
+      </div>
+
+      {/* 스크롤 영역: 시간 그리드 */}
+      <div className={styles.gridWrapper} ref={gridRef}>
         <div className={styles.grid} style={{ height: 24 * SLOT_HEIGHT }}>
-          {/* 시간축 */}
-          <div className={styles.timeGutter}>
+          <div className={styles.gutterCell}>
             {HOURS.map((hour) => (
               <div
                 key={hour}
@@ -193,7 +194,6 @@ export default function WeekView() {
             ))}
           </div>
 
-          {/* 날짜 열 */}
           {weekDays.map((day) => {
             const today = isToday(day);
             const dayEvents = getEventsForDay(day);
@@ -203,7 +203,6 @@ export default function WeekView() {
                 key={day.toISOString()}
                 className={`${styles.dayColumn} ${today ? styles.todayColumn : ''}`}
               >
-                {/* 시간 슬롯 */}
                 {HOURS.map((hour) => (
                   <div
                     key={hour}
@@ -213,7 +212,6 @@ export default function WeekView() {
                   />
                 ))}
 
-                {/* 이벤트 블록 */}
                 {dayEvents.map((event) => {
                   const pos = getEventPosition(event);
                   return (
@@ -238,7 +236,6 @@ export default function WeekView() {
                   );
                 })}
 
-                {/* 현재 시간선 */}
                 {today && (
                   <div className={styles.nowLine} style={{ top: nowLineTop }}>
                     <div className={styles.nowDot} />
