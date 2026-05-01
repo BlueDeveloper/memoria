@@ -96,11 +96,16 @@
   font-weight: 600;
 }
 
-/* 스크롤 영역 */
+/* 스크롤 영역 — 스크롤바 숨기고 스크롤 유지 (헤더 정렬 깨짐 방지) */
 .gridWrapper {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+}
+
+.gridWrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .grid {
