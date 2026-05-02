@@ -86,7 +86,7 @@ api.interceptors.response.use(
       processQueue(refreshError, null);
       setAccessToken(null);
       if (typeof window !== 'undefined') {
-        window.location.href = '/auth/login';
+        window.location.href = '/';
       }
       return Promise.reject(refreshError);
     } finally {

@@ -113,6 +113,14 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
   }, [allDay, setValue]);
 
   const onSubmit = async (data: FormData) => {
+    const resolvedDiaryId = event?.diaryId ?? selectedDiaryId ?? 0;
+
+    // 음수(샘플) diaryId로는 API 호출 불가
+    if (resolvedDiaryId <= 0) {
+      console.warn('샘플 다이어리에서는 일정을 저장할 수 없습니다.');
+      return;
+    }
+
     const startDt = data.allDay
       ? `${data.startDate}T00:00:00`
       : `${data.startDate}T${data.startTime}:00`;
@@ -121,7 +129,7 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
       : `${data.endDate}T${data.endTime}:00`;
 
     const payload = {
-      diaryId: event?.diaryId ?? selectedDiaryId ?? 0,
+      diaryId: resolvedDiaryId,
       title: data.title,
       description: data.description || undefined,
       location: data.location || undefined,

@@ -58,6 +58,10 @@ function DiaryContent() {
       if (diaries.length === 0 || diaries[0]?.diaryId < 0) {
         setDiaries(MOCK_DIARIES);
       }
+      // 샘플(-1) URL이면 목업 첫 번째로 리다이렉트
+      if (diaryId <= 0) {
+        router.replace(`/diary?id=${MOCK_DIARIES[0].diaryId}`);
+      }
       return;
     }
     try {
@@ -70,9 +74,15 @@ function DiaryContent() {
     } catch {
       setDiaries(MOCK_DIARIES);
     }
-  }, [isAuthenticated, diaries, diaryId, setDiaries, selectDiary]);
+  }, [isAuthenticated, diaries, diaryId, setDiaries, router]);
 
   const fetchEvents = useCallback(async () => {
+    // 비로그인(샘플) 다이어리 — API 호출하지 않고 목업 사용
+    if (diaryId <= 0) {
+      setEvents(MOCK_EVENTS.filter((e) => e.diaryId === diaryId));
+      return;
+    }
+
     const viewStart =
       viewMode === 'month'
         ? startOfWeek(startOfMonth(currentDate), { weekStartsOn: 0 })
