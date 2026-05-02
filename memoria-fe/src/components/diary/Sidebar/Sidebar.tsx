@@ -159,8 +159,8 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* 프로필 */}
-      {isAuthenticated ? (
+      {/* 프로필 (로그인 시만) */}
+      {isAuthenticated && (
         <div className={styles.profile}>
           <div className={styles.avatar}>{nickname.charAt(0)}</div>
           <span className={styles.profileName}>{nickname}</span>
@@ -176,14 +176,6 @@ export default function Sidebar() {
             <LogOut size={16} />
           </button>
         </div>
-      ) : (
-        <button
-          className={styles.loginProfile}
-          onClick={() => setShowAuthPrompt(true)}
-        >
-          <LogIn size={16} />
-          <span>로그인 / 회원가입</span>
-        </button>
       )}
 
       {showAuthPrompt && (
