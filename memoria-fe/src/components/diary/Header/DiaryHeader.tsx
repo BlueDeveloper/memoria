@@ -57,6 +57,9 @@ export default function DiaryHeader() {
   return (
     <header className={styles.header}>
       <div className={styles.left}>
+        <button className={styles.menuButton} onClick={toggleSidebar}>
+          <Menu size={20} />
+        </button>
         <button className={styles.todayButton} onClick={handleToday}>
           오늘
         </button>
