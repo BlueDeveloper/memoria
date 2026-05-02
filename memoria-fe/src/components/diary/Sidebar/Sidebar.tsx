@@ -4,39 +4,30 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   format,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-  isSameMonth,
   isToday,
-  isSameDay,
-  addMonths,
-  subMonths,
+  isTomorrow,
+  parseISO,
+  isBefore,
+  addDays,
+  startOfDay,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Settings, ChevronLeft, ChevronRight, Check, Plus, LogIn, LogOut } from 'lucide-react';
+import { Check, Plus, LogIn, LogOut, Clock, CalendarDays } from 'lucide-react';
 import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/api';
+import { DiaryEvent } from '@/types/diary';
 import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
 import CreateDiaryModal from '@/components/diary/CreateDiaryModal/CreateDiaryModal';
 import styles from './Sidebar.module.css';
-
-const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 
 export default function Sidebar() {
   const router = useRouter();
   const diaries = useDiaryStore((s) => s.diaries);
   const selectedDiaryId = useDiaryStore((s) => s.selectedDiaryId);
-  const visibleDiaryIds = useDiaryStore((s) => s.visibleDiaryIds);
-  const toggleDiaryVisibility = useDiaryStore((s) => s.toggleDiaryVisibility);
-  const setCurrentDate = useDiaryStore((s) => s.setCurrentDate);
-  const currentDate = useDiaryStore((s) => s.currentDate);
+  const events = useDiaryStore((s) => s.events);
   const user = useAuthStore((s) => s.user);
 
-  const [miniDate, setMiniDate] = useState(new Date());
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [showCreateDiary, setShowCreateDiary] = useState(false);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -44,24 +35,35 @@ export default function Sidebar() {
 
   const currentDiary = diaries.find((d) => d.diaryId === selectedDiaryId);
 
-  const miniDays = useMemo(() => {
-    const monthStart = startOfMonth(miniDate);
-    const monthEnd = endOfMonth(miniDate);
-    const calStart = startOfWeek(monthStart, { weekStartsOn: 0 });
-    const calEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
-    return eachDayOfInterval({ start: calStart, end: calEnd });
-  }, [miniDate]);
+  // 오늘의 일정
+  const todayEvents = useMemo(() => {
+    const now = new Date();
+    return events.filter((e) => {
+      const start = parseISO(e.startDt);
+      return isToday(start) || (e.allDay && isToday(start));
+    }).sort((a, b) => a.startDt.localeCompare(b.startDt));
+  }, [events]);
 
-  const handleMiniDayClick = (day: Date) => {
-    setCurrentDate(day);
+  // 다가오는 일정 (내일~7일)
+  const upcomingEvents = useMemo(() => {
+    const tomorrow = startOfDay(addDays(new Date(), 1));
+    const weekLater = startOfDay(addDays(new Date(), 8));
+    return events.filter((e) => {
+      const start = parseISO(e.startDt);
+      return start >= tomorrow && isBefore(start, weekLater);
+    }).sort((a, b) => a.startDt.localeCompare(b.startDt))
+      .slice(0, 5);
+  }, [events]);
+
+  const formatEventTime = (event: DiaryEvent): string => {
+    if (event.allDay) return '종일';
+    return format(parseISO(event.startDt), 'HH:mm');
   };
 
-  const handleBackToIntro = () => {
-    if (!isAuthenticated) {
-      setShowAuthPrompt(true);
-      return;
-    }
-    router.push('/');
+  const formatEventDate = (event: DiaryEvent): string => {
+    const start = parseISO(event.startDt);
+    if (isTomorrow(start)) return '내일';
+    return format(start, 'M/d (EEE)', { locale: ko });
   };
 
   const nickname = user?.nickname ?? '사용자';
@@ -91,74 +93,70 @@ export default function Sidebar() {
       )}
 
       {/* 다이어리 관리 */}
-      {isAuthenticated && (
-        <>
-          <button className={styles.backButton} onClick={() => setShowCreateDiary(true)}>
-            <Plus size={16} />
-            새 다이어리 만들기
-          </button>
-        </>
-      )}
-      {!isAuthenticated && (
+      {isAuthenticated ? (
+        <button className={styles.backButton} onClick={() => setShowCreateDiary(true)}>
+          <Plus size={16} />
+          새 다이어리 만들기
+        </button>
+      ) : (
         <button className={styles.backButton} onClick={() => setShowAuthPrompt(true)}>
           <Plus size={16} />
           새 다이어리 만들기
         </button>
       )}
 
-      {/* 미니 달력 */}
-      <div className={styles.miniCalendar}>
-        <div className={styles.miniHeader}>
-          <span className={styles.miniTitle}>
-            {format(miniDate, 'yyyy년 M월', { locale: ko })}
-          </span>
-          <div className={styles.miniNavGroup}>
-            <button
-              className={styles.miniNav}
-              onClick={() => setMiniDate(subMonths(miniDate, 1))}
-            >
-              <ChevronLeft size={14} />
-            </button>
-            <button
-              className={styles.miniNav}
-              onClick={() => setMiniDate(addMonths(miniDate, 1))}
-            >
-              <ChevronRight size={14} />
-            </button>
+      {/* 오늘의 일정 */}
+      <div className={styles.eventSection}>
+        <div className={styles.eventSectionTitle}>
+          <Clock size={14} />
+          오늘의 일정
+        </div>
+        {todayEvents.length === 0 ? (
+          <div className={styles.emptyState}>오늘 일정이 없습니다</div>
+        ) : (
+          <div className={styles.eventList}>
+            {todayEvents.map((event) => (
+              <div key={event.eventId} className={styles.eventItem}>
+                <div
+                  className={styles.eventDot}
+                  style={{ backgroundColor: event.color || currentDiary?.color || 'var(--color-primary)' }}
+                />
+                <div className={styles.eventInfo}>
+                  <span className={styles.eventTitle}>{event.title}</span>
+                  <span className={styles.eventTime}>{formatEventTime(event)}</span>
+                </div>
+              </div>
+            ))}
           </div>
+        )}
+      </div>
+
+      {/* 다가오는 일정 */}
+      <div className={styles.eventSection}>
+        <div className={styles.eventSectionTitle}>
+          <CalendarDays size={14} />
+          다가오는 일정
         </div>
-
-        <div className={styles.miniGrid}>
-          {WEEKDAY_LABELS.map((d) => (
-            <div key={d} className={styles.miniDayHeader}>
-              {d}
-            </div>
-          ))}
-          {miniDays.map((day) => {
-            const sameMonth = isSameMonth(day, miniDate);
-            const today = isToday(day);
-            const selected = isSameDay(day, currentDate);
-
-            const cls = [
-              styles.miniDay,
-              !sameMonth && styles.miniDayOther,
-              today && !selected && styles.miniDayToday,
-              selected && styles.miniDaySelected,
-            ]
-              .filter(Boolean)
-              .join(' ');
-
-            return (
-              <button
-                key={day.toISOString()}
-                className={cls}
-                onClick={() => handleMiniDayClick(day)}
-              >
-                {format(day, 'd')}
-              </button>
-            );
-          })}
-        </div>
+        {upcomingEvents.length === 0 ? (
+          <div className={styles.emptyState}>예정된 일정이 없습니다</div>
+        ) : (
+          <div className={styles.eventList}>
+            {upcomingEvents.map((event) => (
+              <div key={event.eventId} className={styles.eventItem}>
+                <div
+                  className={styles.eventDot}
+                  style={{ backgroundColor: event.color || currentDiary?.color || 'var(--color-primary)' }}
+                />
+                <div className={styles.eventInfo}>
+                  <span className={styles.eventTitle}>{event.title}</span>
+                  <span className={styles.eventTime}>
+                    {formatEventDate(event)} {!event.allDay && formatEventTime(event)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 프로필 */}
