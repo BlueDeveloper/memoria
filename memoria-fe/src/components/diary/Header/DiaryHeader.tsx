@@ -3,7 +3,8 @@
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Bell, Menu, LogIn } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ChevronLeft, ChevronRight, Bell, Menu, LogIn, Home } from 'lucide-react';
 import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
 import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
@@ -20,6 +21,7 @@ export default function DiaryHeader() {
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const router = useRouter();
 
   const handlePrev = () => {
     if (viewMode === 'month') {
@@ -59,6 +61,9 @@ export default function DiaryHeader() {
       <div className={styles.left}>
         <button className={styles.menuButton} onClick={toggleSidebar}>
           <Menu size={20} />
+        </button>
+        <button className={styles.menuButton} onClick={() => router.push('/')} title="인트로">
+          <Home size={18} />
         </button>
         <button className={styles.todayButton} onClick={handleToday}>
           오늘
