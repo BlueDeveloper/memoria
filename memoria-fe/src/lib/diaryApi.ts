@@ -61,7 +61,7 @@ export async function createEvent(
   req: CreateEventRequest,
 ): Promise<DiaryEvent> {
   const { data } = await api.post<ApiResponse<DiaryEvent>>(
-    `${BASE}/${req.diaryId}/events`,
+    '/api/events',
     req,
   );
   return data.data;
@@ -72,14 +72,14 @@ export async function updateEvent(
   req: UpdateEventRequest,
 ): Promise<DiaryEvent> {
   const { data } = await api.put<ApiResponse<DiaryEvent>>(
-    `${BASE}/events/${id}`,
+    `/api/events/${id}`,
     req,
   );
   return data.data;
 }
 
 export async function deleteEvent(id: number): Promise<void> {
-  await api.delete(`${BASE}/events/${id}`);
+  await api.delete(`/api/events/${id}`);
 }
 
 /* ---------- 멤버 ---------- */
