@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import api, { setAccessToken } from '@/lib/api';
@@ -11,11 +11,16 @@ function KakaoCallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setUser = useAuthStore((s) => s.setUser);
+  const processed = useRef(false);
 
   useEffect(() => {
+    // React Strict Mode 이중 호출 방지
+    if (processed.current) return;
+    processed.current = true;
+
     const code = searchParams.get('code');
     if (!code) {
-      router.replace('/auth/login');
+      router.replace('/');
       return;
     }
 
@@ -29,7 +34,6 @@ function KakaoCallbackHandler() {
 
         setAccessToken(data.data.accessToken);
 
-        // 사용자 정보 조회
         const { data: userRes } = await api.get<ApiResponse<{ id: number; email: string; nickname: string; profileImage: string | null }>>(
           '/api/auth/me'
         );
@@ -38,7 +42,6 @@ function KakaoCallbackHandler() {
         router.replace('/');
       } catch (err) {
         console.error('카카오 로그인 실패:', err);
-        alert('로그인에 실패했습니다. 다시 시도해주세요.');
         router.replace('/');
       }
     };

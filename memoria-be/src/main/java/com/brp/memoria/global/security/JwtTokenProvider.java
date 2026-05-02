@@ -60,6 +60,7 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
+        if (token == null || token.isBlank()) return false;
         try {
             Jwts.parser()
                     .verifyWith(key)
@@ -68,7 +69,7 @@ public class JwtTokenProvider {
             return true;
         } catch (ExpiredJwtException e) {
             log.warn("만료된 JWT 토큰입니다.");
-        } catch (JwtException e) {
+        } catch (Exception e) {
             log.warn("유효하지 않은 JWT 토큰입니다: {}", e.getMessage());
         }
         return false;
