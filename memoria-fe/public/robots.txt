@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /auth/callback/
+Disallow: /api/
+
+Sitemap: https://memoria-6e7.pages.dev/sitemap.xml
