@@ -77,13 +77,6 @@ export default function IntroPage() {
     fetchDiaries();
   }, [fetchDiaries]);
 
-  // 다이어리 1개면 인트로 스킵 → 바로 진입
-  useEffect(() => {
-    if (loaded && diaries.length === 1) {
-      router.replace(`/diary?id=${diaries[0].diaryId}`);
-    }
-  }, [loaded, diaries, router]);
-
   const handleDiaryClick = (diary: Diary) => {
     router.push(`/diary?id=${diary.diaryId}`);
   };
@@ -103,8 +96,7 @@ export default function IntroPage() {
   const todayLabel = format(new Date(), 'M월 d일 EEEE', { locale: ko });
   const nickname = user?.nickname ?? '사용자';
 
-  // 로딩 중이거나 다이어리 1개 이하면 인트로 렌더링하지 않음 (리다이렉트 처리)
-  if (!loaded || diaries.length <= 1) {
+  if (!loaded) {
     return null;
   }
 
