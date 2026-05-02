@@ -113,10 +113,15 @@ Memoria/
 9. ~~OCI VCN 보안 목록 8084 포트~~ ✅
 10. ~~FE Cloudflare Pages 배포~~ ✅
 11. ~~카카오 로그인~~ ✅
-12. 카카오 클라이언트 시크릿 재발급 후 BE 반영 (보안 강화)
-13. 구글 로그인 구현
-14. 애플 로그인 구현
-15. Jenkins CI/CD 파이프라인 구성
-16. 운영 서버 재배포 (Diary 리팩토링 + 카카오 로그인 반영)
+12. ~~Jenkins CI/CD 파이프라인~~ ✅ (GitHub Webhook → Jenkins → 자동 배포)
+13. ~~운영 서버 재배포~~ ✅ (Diary + 카카오 + 티켓/상점)
+14. 카카오 클라이언트 시크릿 재발급 후 BE 반영 (보안 강화)
+15. 구글 로그인 구현
+16. 애플 로그인 구현
 17. 도메인 확보 후 HTTPS 설정
+18. FE Cloudflare Pages 재배포 (Diary 리팩토링 반영)
+19. 티켓 충전 결제 연동 (Toss Payments)
+20. 상점 UI (로고/테마 구매 화면)
+21. 웨딩 플래너 다이어리 템플릿
+22. 모바일 앱 (React Native Phase 2)
 
