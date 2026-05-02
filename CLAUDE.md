@@ -115,13 +115,45 @@ Memoria/
 11. ~~카카오 로그인~~ ✅
 12. ~~Jenkins CI/CD 파이프라인~~ ✅ (GitHub Webhook → Jenkins → 자동 배포)
 13. ~~운영 서버 재배포~~ ✅ (Diary + 카카오 + 티켓/상점)
-14. 카카오 클라이언트 시크릿 재발급 후 BE 반영 (보안 강화)
-15. 구글 로그인 구현
-16. 애플 로그인 구현
-17. 도메인 확보 후 HTTPS 설정
-18. FE Cloudflare Pages 재배포 (Diary 리팩토링 반영)
-19. 티켓 충전 결제 연동 (Toss Payments)
-20. 상점 UI (로고/테마 구매 화면)
-21. 웨딩 플래너 다이어리 템플릿
-22. 모바일 앱 (React Native Phase 2)
+14. ~~SEO + Analytics + Clarity 설정~~ ✅ (스크립트 삽입 완료, ID 발급 필요)
+15. ~~홍보 전략 수립~~ ✅ (docs/planning/06-marketing-strategy.md)
+
+### 웹 MVP 완성
+16. 이벤트 CRUD 실 API 연동 (목업 → 실제)
+17. 멤버 초대 (카톡/이메일)
+18. 프로필 관리 (닉네임/이미지 변경)
+19. 다이어리 설정 (이름/색상 변경, 멤버 관리)
+20. 로딩/에러 상태 UI (스켈레톤, 빈 상태)
+21. 모바일 반응형 점검
+
+### 인증
+22. 카카오 클라이언트 시크릿 재발급 → BE 반영
+23. 구글 로그인 구현
+24. 애플 로그인 구현
+25. 계정 탈퇴 (Soft Delete)
+
+### 인프라
+26. 도메인 확보 → HTTPS → sitemap/robots URL 교체
+27. Clarity 프로젝트 생성 → ID .env 반영
+28. GA4 속성 생성 → 측정 ID .env 반영
+29. Google Search Console + 네이버 서치어드바이저 등록
+30. FE Cloudflare Pages 재배포
+
+### 수익화
+31. 티켓 충전 결제 연동 (Toss Payments)
+32. 상점 UI (로고/테마 카탈로그 + 구매)
+33. 로고/테마 에셋 제작 (기본 무료 + 프리미엄)
+34. 웨딩 플래너 다이어리 템플릿
+
+### 보안/법률
+35. 개인정보처리방침 페이지
+36. 이용약관 페이지
+37. Rate Limiting + 보안 헤더
+38. 결제/환불 정책 (수익화 시)
+
+### Phase 2
+39. 모바일 앱 (React Native)
+40. 인앱 결제 (Play/Apple)
+41. 푸시 알림 (FCM/APNs)
+42. AI 일정 비서 (Claude API)
 
