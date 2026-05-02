@@ -10,6 +10,7 @@ import {
   endOfWeek,
 } from 'date-fns';
 import { useDiaryStore } from '@/store/diaryStore';
+import { useAuthStore } from '@/store/authStore';
 import MonthView from '@/components/diary/MonthView/MonthView';
 import WeekView from '@/components/diary/WeekView/WeekView';
 import { getMyDiaries, getEvents } from '@/lib/diaryApi';
@@ -44,20 +45,31 @@ function DiaryContent() {
   const setDiaries = useDiaryStore((s) => s.setDiaries);
   const setEvents = useDiaryStore((s) => s.setEvents);
   const selectDiary = useDiaryStore((s) => s.selectDiary);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => {
     selectDiary(diaryId);
   }, [diaryId, selectDiary]);
 
   const fetchDiaries = useCallback(async () => {
-    if (diaries.length > 0) return;
+    // 로그인 상태면 실제 다이어리, 아니면 목업
+    if (!isAuthenticated) {
+      if (diaries.length === 0 || diaries[0]?.diaryId < 0) {
+        setDiaries(MOCK_DIARIES);
+      }
+      return;
+    }
     try {
       const data = await getMyDiaries();
       setDiaries(data);
+      // 현재 선택된 다이어리 ID 업데이트
+      if (data.length > 0 && diaryId <= 0) {
+        selectDiary(data[0].diaryId);
+      }
     } catch {
       setDiaries(MOCK_DIARIES);
     }
-  }, [diaries.length, setDiaries]);
+  }, [isAuthenticated, diaries, diaryId, setDiaries, selectDiary]);
 
   const fetchEvents = useCallback(async () => {
     const viewStart =
