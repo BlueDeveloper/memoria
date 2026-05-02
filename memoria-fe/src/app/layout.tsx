@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import AuthProvider from '@/components/providers/AuthProvider';
 import './globals.css';
 
 const SITE_NAME = 'Memoria';
@@ -76,7 +77,9 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <AuthProvider>
         {children}
+        </AuthProvider>
 
         {/* Microsoft Clarity */}
         <Script id="clarity" strategy="afterInteractive">

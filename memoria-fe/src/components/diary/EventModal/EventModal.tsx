@@ -133,6 +133,7 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
       remindMinutes: data.remindMinutes || undefined,
     };
 
+    console.log('Event payload:', JSON.stringify(payload));
     try {
       if (isEdit) {
         await updateEvent(event.eventId, payload);
@@ -141,6 +142,7 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
       }
     } catch (err) {
       console.error('이벤트 저장 실패:', err);
+      return; // 실패 시 모달 닫지 않음
     }
     onClose();
   };
