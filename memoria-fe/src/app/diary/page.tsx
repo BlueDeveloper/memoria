@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   format,
   startOfMonth,
@@ -37,6 +37,7 @@ const MOCK_EVENTS: DiaryEvent[] = [
 
 function DiaryContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const diaryId = Number(searchParams.get('id') ?? 1);
 
   const viewMode = useDiaryStore((s) => s.viewMode);
@@ -62,9 +63,9 @@ function DiaryContent() {
     try {
       const data = await getMyDiaries();
       setDiaries(data);
-      // 현재 선택된 다이어리 ID 업데이트
+      // URL이 음수(샘플)면 실제 다이어리 ID로 리다이렉트
       if (data.length > 0 && diaryId <= 0) {
-        selectDiary(data[0].diaryId);
+        router.replace(`/diary?id=${data[0].diaryId}`);
       }
     } catch {
       setDiaries(MOCK_DIARIES);
