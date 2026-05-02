@@ -59,11 +59,7 @@ interface Props {
 }
 
 export default function EventModal({ onClose, event, initialDate, initialHour }: Props) {
-  const diaries = useDiaryStore((s) => s.diaries);
   const selectedDiaryId = useDiaryStore((s) => s.selectedDiaryId);
-  const [currentDiaryId, setCurrentDiaryId] = useState(
-    event?.diaryId ?? selectedDiaryId ?? diaries[0]?.diaryId ?? 0
-  );
   const [selectedColor, setSelectedColor] = useState(event?.color ?? '');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const isEdit = !!event;
@@ -125,7 +121,7 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
       : `${data.endDate}T${data.endTime}:00`;
 
     const payload = {
-      diaryId: currentDiaryId,
+      diaryId: event?.diaryId ?? selectedDiaryId ?? 0,
       title: data.title,
       description: data.description || undefined,
       location: data.location || undefined,
@@ -168,21 +164,7 @@ export default function EventModal({ onClose, event, initialDate, initialHour }:
             registration={register('title')}
           />
 
-          {/* 다이어리 선택 */}
-          <div className={styles.field}>
-            <label className={styles.label}>다이어리</label>
-            <select
-              className={styles.select}
-              value={currentDiaryId}
-              onChange={(e) => setCurrentDiaryId(Number(e.target.value))}
-            >
-              {diaries.map((diary) => (
-                <option key={diary.diaryId} value={diary.diaryId}>
-                  {diary.name}
-                </option>
-              ))}
-            </select>
-          </div>
+
 
           {/* 종일 토글 */}
           <div className={styles.row}>
