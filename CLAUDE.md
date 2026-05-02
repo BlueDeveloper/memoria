@@ -132,28 +132,43 @@ Memoria/
 24. 애플 로그인 구현
 25. 계정 탈퇴 (Soft Delete)
 
+### 브랜드 리네이밍 (이름 확정 후)
+26. FE: layout.tsx 메타태그 (title, description, OG, JSON-LD)
+27. FE: page.tsx, login, register, Sidebar — alt 텍스트/브랜드명
+28. FE: manifest.json (name, short_name)
+29. FE: 로고 이미지 교체 (public/logo.png, 파비콘 전체 재생성)
+30. FE: sitemap.xml URL 교체 (도메인 확보 시)
+31. BE: KakaoOAuthService 이메일 도메인 (@memoria.app → 새 도메인)
+32. BE: application.yml spring.application.name
+33. 카카오 개발자 콘솔 — 앱 이름 변경
+34. Cloudflare Pages — 프로젝트명 변경 또는 신규 생성
+35. GitHub 레포명 변경 (선택)
+36. OCI 서버 — 서비스명/디렉토리명 변경 (선택)
+37. Jenkins Job명 변경 (선택)
+38. 도메인 확보 + 새 이름 기반
+
 ### 인프라
-26. 도메인 확보 → HTTPS → sitemap/robots URL 교체
-27. Clarity 프로젝트 생성 → ID .env 반영
-28. GA4 속성 생성 → 측정 ID .env 반영
-29. Google Search Console + 네이버 서치어드바이저 등록
-30. FE Cloudflare Pages 재배포
+39. 도메인 확보 → HTTPS → sitemap/robots URL 교체
+40. Clarity 프로젝트 생성 → ID .env 반영
+41. GA4 속성 생성 → 측정 ID .env 반영
+42. Google Search Console + 네이버 서치어드바이저 등록
+43. FE Cloudflare Pages 재배포
 
 ### 수익화
-31. 티켓 충전 결제 연동 (Toss Payments)
-32. 상점 UI (로고/테마 카탈로그 + 구매)
-33. 로고/테마 에셋 제작 (기본 무료 + 프리미엄)
-34. 웨딩 플래너 다이어리 템플릿
+44. 티켓 충전 결제 연동 (Toss Payments)
+45. 상점 UI (로고/테마 카탈로그 + 구매)
+46. 로고/테마 에셋 제작 (기본 무료 + 프리미엄)
+47. 웨딩 플래너 다이어리 템플릿
 
 ### 보안/법률
-35. 개인정보처리방침 페이지
-36. 이용약관 페이지
-37. Rate Limiting + 보안 헤더
-38. 결제/환불 정책 (수익화 시)
+48. 개인정보처리방침 페이지
+49. 이용약관 페이지
+50. Rate Limiting + 보안 헤더
+51. 결제/환불 정책 (수익화 시)
 
 ### Phase 2
-39. 모바일 앱 (React Native)
-40. 인앱 결제 (Play/Apple)
-41. 푸시 알림 (FCM/APNs)
-42. AI 일정 비서 (Claude API)
+52. 모바일 앱 (React Native)
+53. 인앱 결제 (Play/Apple)
+54. 푸시 알림 (FCM/APNs)
+55. AI 일정 비서 (Claude API)
 
