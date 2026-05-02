@@ -93,12 +93,6 @@ export default function Sidebar() {
       {/* 다이어리 관리 */}
       {isAuthenticated && (
         <>
-          {diaries.length > 1 && (
-            <button className={styles.backButton} onClick={handleBackToIntro}>
-              <Plus size={16} />
-              다른 다이어리로 이동
-            </button>
-          )}
           <button className={styles.backButton} onClick={() => setShowCreateDiary(true)}>
             <Plus size={16} />
             새 다이어리 만들기
