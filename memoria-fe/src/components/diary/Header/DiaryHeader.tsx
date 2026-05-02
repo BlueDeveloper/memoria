@@ -2,9 +2,10 @@
 
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Bell, Menu, LogIn, Home } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Bell, Menu, LogIn, Home, LogOut, User } from 'lucide-react';
+import api from '@/lib/api';
 import { useDiaryStore } from '@/store/diaryStore';
 import { useAuthStore } from '@/store/authStore';
 import AuthPromptModal from '@/components/diary/AuthPromptModal/AuthPromptModal';
@@ -20,8 +21,29 @@ export default function DiaryHeader() {
   const toggleSidebar = useDiaryStore((s) => s.toggleSidebar);
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const clearUser = useAuthStore((s) => s.clearUser);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  // 프로필 메뉴 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const handleLogout = async () => {
+    try { await api.post('/api/auth/logout'); } catch {}
+    clearUser();
+    setShowProfileMenu(false);
+    router.push('/');
+  };
 
   const handlePrev = () => {
     if (viewMode === 'month') {
@@ -96,11 +118,27 @@ export default function DiaryHeader() {
         </div>
         {isAuthenticated ? (
           <>
-            <button className={styles.iconButton}>
-              <Bell size={18} />
-              <span className={styles.badge} />
-            </button>
-            <div className={styles.profileAvatar}>{nickname.charAt(0)}</div>
+            <div className={styles.profileWrapper} ref={profileMenuRef}>
+              <button
+                className={styles.profileAvatar}
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+              >
+                {nickname.charAt(0)}
+              </button>
+              {showProfileMenu && (
+                <div className={styles.profileMenu}>
+                  <div className={styles.profileMenuHeader}>
+                    <span className={styles.profileMenuName}>{nickname}</span>
+                    <span className={styles.profileMenuEmail}>{user?.email}</span>
+                  </div>
+                  <div className={styles.profileMenuDivider} />
+                  <button className={styles.profileMenuItem} onClick={handleLogout}>
+                    <LogOut size={14} />
+                    로그아웃
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <button
